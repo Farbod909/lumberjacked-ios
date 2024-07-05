@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct Movement: Codable, Identifiable  {
+struct Movement: Codable, Hashable, Identifiable  {
     var id: Int
     var name: String
     var split: String
     
-    struct MovementLog: Codable, Equatable {
+    struct MovementLog: Codable, Equatable, Hashable {
         var reps: Int
         var load: String
     }
