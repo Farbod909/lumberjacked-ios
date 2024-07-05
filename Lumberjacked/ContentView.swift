@@ -44,7 +44,6 @@ struct ContentView: View {
                                 Text("Load").padding(.trailing, 14)
                             }
                             .fontWidth(.condensed)
-
                         }
                     }
                 }
@@ -60,7 +59,7 @@ struct ContentView: View {
                 }
             }
             .navigationDestination(for: Movement.self) { selection in
-                Text(selection.name)
+                MovementDetailView(movement: selection)
             }
         }
     }
