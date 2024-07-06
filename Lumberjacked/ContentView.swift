@@ -49,7 +49,7 @@ struct ContentView: View {
                 }
             }
             .task {
-                if let loadedMovements = await loadMovements() {
+                if let loadedMovements = await loadAllMovements() {
                     movements = loadedMovements
                 }
             }
