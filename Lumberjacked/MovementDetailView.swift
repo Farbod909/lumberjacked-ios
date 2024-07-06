@@ -9,6 +9,8 @@ import SwiftUI
 
 
 struct MovementDetailView: View {
+    @Binding var path: NavigationPath
+
     @State var movement: Movement
     
     var body: some View {
@@ -59,7 +61,7 @@ struct MovementDetailView: View {
                                 movement.movementLogs.sorted(
                                     by: { $0.timestamp! > $1.timestamp! }),
                                 id: \.self) { log in
-                                LogItem(log: log)
+                                    LogItem(movement: movement, log: log)
                             }
                         }
                     }
@@ -74,14 +76,19 @@ struct MovementDetailView: View {
             }
         }
         .toolbar {
-            Button("Edit movement", systemImage: "pencil.circle") {
-                //
-            }
-            Button("New log", systemImage: "plus.square.fill") {
-                //
+            HStack {
+                Button("Edit movement", systemImage: "pencil.circle") {
+                    //
+                }
+                Button("New log", systemImage: "plus.square.fill") {
+                    path.append(MovementAndLog(movement: movement, log: Movement.MovementLog()))
+                }
             }
         }
         .navigationTitle(movement.name)
+        .navigationDestination(for: MovementAndLog.self) { selection in
+            LogInputView(path: $path, movement: selection.movement, movementLog: selection.log)
+        }
         .padding(.horizontal, 16)
     }
 }
@@ -148,34 +155,41 @@ struct RecommendationsView: View {
 }
 
 struct LogItem: View {
+    let movement: Movement
     let log: Movement.MovementLog
     
     var body: some View {
-        HStack {
-            if let timestamp = log.timestamp {
-                Text(timestamp.formatted(date: .abbreviated, time: .omitted))
-                    .fontWeight(.semibold)
+        NavigationLink(value: MovementAndLog(movement: movement, log: log)) {
+            HStack {
+                if let timestamp = log.timestamp {
+                    Text(timestamp.formatted(date: .abbreviated, time: .omitted))
+                        .fontWeight(.semibold)
+                }
+                Spacer()
+                if let sets = log.sets {
+                    Text(sets.formatted())
+                        .frame(width: 40)
+                }
+                if let reps = log.reps {
+                    Text(reps.formatted())
+                        .frame(width: 40)
+                }
+                if let load = log.load {
+                    Text(load)
+                        .frame(width: 60)
+                }
             }
-            Spacer()
-            if let sets = log.sets {
-                Text("\(sets.formatted())")
-                    .frame(width: 40)
-            }
-            Text(log.reps.formatted())
-                .frame(width: 40)
-            Text(log.load)
-                .frame(width: 60)
-
+            .padding(.horizontal, 8)
+            .padding(.vertical, 12)
+            .background(Color.init(uiColor: .systemGray6))
+            .foregroundColor(.primary)
+            .cornerRadius(5)
+            .padding(.bottom, 2)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 12)
-        .background(Color.init(uiColor: .systemGray6))
-        .cornerRadius(5)
-        .padding(.bottom, 2)
     }
 }
 
 
-#Preview {
-    MovementDetailView(movement: Movement(id: 1, name: "Name", split: "Split", movementLogs: []))
-}
+//#Preview {
+//    MovementDetailView(movement: Movement(id: 1, name: "Name", split: "Split", movementLogs: []), path: NavigationPath())
+//}

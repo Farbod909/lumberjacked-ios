@@ -13,6 +13,8 @@
 		8E0CA2CE2C3675E400335C57 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E0CA2CD2C3675E400335C57 /* Preview Assets.xcassets */; };
 		8E5EB98C2C37B34C00186172 /* Movement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB98B2C37B34C00186172 /* Movement.swift */; };
 		8E5EB9A82C38643500186172 /* MovementDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9A72C38643500186172 /* MovementDetailView.swift */; };
+		8E5EB9AA2C38D72100186172 /* LogInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9A92C38D72100186172 /* LogInputView.swift */; };
+		8E5EB9AC2C3920FA00186172 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9AB2C3920FA00186172 /* Util.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +25,8 @@
 		8E0CA2CD2C3675E400335C57 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8E5EB98B2C37B34C00186172 /* Movement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movement.swift; sourceTree = "<group>"; };
 		8E5EB9A72C38643500186172 /* MovementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementDetailView.swift; sourceTree = "<group>"; };
+		8E5EB9A92C38D72100186172 /* LogInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInputView.swift; sourceTree = "<group>"; };
+		8E5EB9AB2C3920FA00186172 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,12 +59,14 @@
 		8E0CA2C52C3675E300335C57 /* Lumberjacked */ = {
 			isa = PBXGroup;
 			children = (
+				8E5EB9A92C38D72100186172 /* LogInputView.swift */,
 				8E5EB98A2C37B31F00186172 /* Models */,
 				8E0CA2C62C3675E300335C57 /* LumberjackedApp.swift */,
 				8E0CA2C82C3675E300335C57 /* ContentView.swift */,
 				8E0CA2CA2C3675E400335C57 /* Assets.xcassets */,
 				8E0CA2CC2C3675E400335C57 /* Preview Content */,
 				8E5EB9A72C38643500186172 /* MovementDetailView.swift */,
+				8E5EB9AB2C3920FA00186172 /* Util.swift */,
 			);
 			path = Lumberjacked;
 			sourceTree = "<group>";
@@ -152,6 +158,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E5EB9A82C38643500186172 /* MovementDetailView.swift in Sources */,
+				8E5EB9AC2C3920FA00186172 /* Util.swift in Sources */,
+				8E5EB9AA2C38D72100186172 /* LogInputView.swift in Sources */,
 				8E0CA2C92C3675E300335C57 /* ContentView.swift in Sources */,
 				8E0CA2C72C3675E300335C57 /* LumberjackedApp.swift in Sources */,
 				8E5EB98C2C37B34C00186172 /* Movement.swift in Sources */,

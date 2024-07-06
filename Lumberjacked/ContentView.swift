@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var path = NavigationPath()
     @State private var movements = [Movement]()
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             List {
                 ForEach(groupMovementsBySplit(movements), id: \.self) { split in
                     Section() {
@@ -20,9 +21,13 @@ struct ContentView: View {
                                 Text(movement.name)
                                 Spacer()
                                 if (!movement.movementLogs.isEmpty) {
-                                    Text(movement.movementLogs[0].reps.formatted()).frame(minWidth: 28)
+                                    if let reps = movement.movementLogs[0].reps {
+                                        Text(reps.formatted()).frame(minWidth: 28)
+                                    }
                                     Divider()
-                                    Text(movement.movementLogs[0].load).frame(minWidth: 28)
+                                    if let load = movement.movementLogs[0].load {
+                                        Text(load).frame(minWidth: 28)
+                                    }
                                 }
                                 NavigationLink(value: movement) { }
                                     .frame(maxWidth: 6)
@@ -59,7 +64,7 @@ struct ContentView: View {
                 }
             }
             .navigationDestination(for: Movement.self) { selection in
-                MovementDetailView(movement: selection)
+                MovementDetailView(path: $path, movement: selection)
             }
         }
     }
