@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var path = NavigationPath()
-    @State private var movements = [Movement]()
+    @State var viewModel: ViewModel
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: $viewModel.container.path) {
             List {
-                ForEach(groupMovementsBySplit(movements), id: \.self) { split in
+                ForEach(viewModel.groupMovementsBySplit(), id: \.self) { split in
                     Section() {
-                        ForEach(getMovementsForSplit(movements, split: split)) { movement in
+                        ForEach(viewModel.getMovementsForSplit(split: split)) { movement in
                             HStack {
                                 Text(movement.name)
                                 Spacer()
@@ -54,9 +53,7 @@ struct ContentView: View {
                 }
             }
             .task {
-                if let loadedMovements = await loadAllMovements() {
-                    movements = loadedMovements
-                }
+                await viewModel.loadAllMovements()
             }
             .toolbar {
                 Button("New Movement", systemImage: "plus") {
@@ -64,12 +61,11 @@ struct ContentView: View {
                 }
             }
             .navigationDestination(for: Movement.self) { selection in
-                MovementDetailView(path: $path, movement: selection)
+                MovementDetailView(
+                    viewModel: MovementDetailView.ViewModel(
+                        container: viewModel.container,
+                        movement: selection))
             }
         }
     }
-}
-
-#Preview {
-    ContentView()
 }

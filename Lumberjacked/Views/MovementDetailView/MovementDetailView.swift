@@ -9,9 +9,7 @@ import SwiftUI
 
 
 struct MovementDetailView: View {
-    @Binding var path: NavigationPath
-
-    @State var movement: Movement
+    @State var viewModel: ViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -19,19 +17,19 @@ struct MovementDetailView: View {
                 Text("split")
                     .textCase(.uppercase)
                     .font(.headline)
-                Text(movement.split)
+                Text(viewModel.movement.split)
                 Spacer()
             }
             
-            if let description = movement.description {
+            if let description = viewModel.movement.description {
                 Text(description)
             }
             
-            if movement.hasAnyRecommendations {
-                RecommendationsView(movement: movement)
+            if viewModel.movement.hasAnyRecommendations {
+                RecommendationsView(movement: viewModel.movement)
             }
             
-            if (!movement.movementLogs.isEmpty) {
+            if (!viewModel.movement.movementLogs.isEmpty) {
                 VStack(alignment: .leading) {
                     HStack {
                         Text("Logs")
@@ -58,10 +56,10 @@ struct MovementDetailView: View {
                     ScrollView {
                         LazyVStack {
                             ForEach(
-                                movement.movementLogs.sorted(
+                                viewModel.movement.movementLogs.sorted(
                                     by: { $0.timestamp! > $1.timestamp! }),
                                 id: \.self) { log in
-                                    LogItem(movement: movement, log: log)
+                                    LogItem(movement: viewModel.movement, log: log)
                             }
                         }
                     }
@@ -71,9 +69,7 @@ struct MovementDetailView: View {
             Spacer()
         }
         .task {
-            if let loadedMovement = await loadMovementDetail(id: movement.id) {
-                movement = loadedMovement
-            }
+            await viewModel.loadMovementDetail(id: viewModel.movement.id)
         }
         .toolbar {
             HStack {
@@ -81,13 +77,17 @@ struct MovementDetailView: View {
                     //
                 }
                 Button("New log", systemImage: "plus.square.fill") {
-                    path.append(MovementAndLog(movement: movement, log: Movement.MovementLog()))
+                    viewModel.container.path.append(MovementAndLog(movement: viewModel.movement, log: MovementLog()))
                 }
             }
         }
-        .navigationTitle(movement.name)
+        .navigationTitle(viewModel.movement.name)
         .navigationDestination(for: MovementAndLog.self) { selection in
-            LogInputView(path: $path, movement: selection.movement, movementLog: selection.log)
+            LogInputView(
+                viewModel: LogInputView.ViewModel(
+                    container: viewModel.container,
+                    movementLog: selection.log,
+                    movement: selection.movement))
         }
         .padding(.horizontal, 16)
     }
@@ -156,7 +156,7 @@ struct RecommendationsView: View {
 
 struct LogItem: View {
     let movement: Movement
-    let log: Movement.MovementLog
+    let log: MovementLog
     
     var body: some View {
         NavigationLink(value: MovementAndLog(movement: movement, log: log)) {
@@ -188,8 +188,3 @@ struct LogItem: View {
         }
     }
 }
-
-
-//#Preview {
-//    MovementDetailView(movement: Movement(id: 1, name: "Name", split: "Split", movementLogs: []), path: NavigationPath())
-//}
