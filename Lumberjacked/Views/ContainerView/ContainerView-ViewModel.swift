@@ -13,8 +13,8 @@ extension ContainerView {
         var path = NavigationPath()
         
         @ObservationIgnored
-        lazy var contentViewModel = {
-            ContentView.ViewModel(container: self)
+        lazy var homeViewModel = {
+            HomeView.ViewModel(container: self)
         }()
     }
 }

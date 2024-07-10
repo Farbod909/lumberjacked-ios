@@ -1,5 +1,5 @@
 //
-//  ContentView-ViewModel.swift
+//  HomeView-ViewModel.swift
 //  Lumberjacked
 //
 //  Created by Farbod Rafezy on 7/6/24.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-extension ContentView {
+extension HomeView {
     @Observable
     class ViewModel {
         var container: ContainerView.ViewModel

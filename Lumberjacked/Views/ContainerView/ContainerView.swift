@@ -12,7 +12,7 @@ struct ContainerView: View {
 
     var body: some View {
         NavigationStack(path: $viewModel.path) {
-            ContentView(viewModel: viewModel.contentViewModel)
+            HomeView(viewModel: viewModel.homeViewModel)
         }
     }
 }

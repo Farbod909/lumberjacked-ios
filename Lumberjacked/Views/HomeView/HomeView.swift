@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HomeView.swift
 //  Lumberjacked
 //
 //  Created by Farbod Rafezy on 7/4/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
     @State var viewModel: ViewModel
     
     var body: some View {
