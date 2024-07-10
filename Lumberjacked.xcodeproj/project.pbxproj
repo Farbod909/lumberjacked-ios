@@ -20,6 +20,7 @@
 		8E5EB9BB2C3CF3C700186172 /* ContainerView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9BA2C3CF3C700186172 /* ContainerView-ViewModel.swift */; };
 		8E5EB9BD2C3CF3D100186172 /* ContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9BC2C3CF3D100186172 /* ContainerView.swift */; };
 		8E5EB9BF2C3D038900186172 /* LogInputView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9BE2C3D038900186172 /* LogInputView-ViewModel.swift */; };
+		8E5EB9C12C3E5A0E00186172 /* MovementLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C02C3E5A0E00186172 /* MovementLog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		8E5EB9BA2C3CF3C700186172 /* ContainerView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerView-ViewModel.swift"; sourceTree = "<group>"; };
 		8E5EB9BC2C3CF3D100186172 /* ContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerView.swift; sourceTree = "<group>"; };
 		8E5EB9BE2C3D038900186172 /* LogInputView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogInputView-ViewModel.swift"; sourceTree = "<group>"; };
+		8E5EB9C02C3E5A0E00186172 /* MovementLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementLog.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				8E5EB98B2C37B34C00186172 /* Movement.swift */,
+				8E5EB9C02C3E5A0E00186172 /* MovementLog.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 				8E0CA2C92C3675E300335C57 /* HomeView.swift in Sources */,
 				8E0CA2C72C3675E300335C57 /* LumberjackedApp.swift in Sources */,
 				8E5EB9BF2C3D038900186172 /* LogInputView-ViewModel.swift in Sources */,
+				8E5EB9C12C3E5A0E00186172 /* MovementLog.swift in Sources */,
 				8E5EB9B22C3A3D4B00186172 /* HomeView-ViewModel.swift in Sources */,
 				8E5EB98C2C37B34C00186172 /* Movement.swift in Sources */,
 			);

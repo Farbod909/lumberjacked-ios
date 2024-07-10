@@ -26,28 +26,6 @@ struct Movement: Codable, Hashable, Identifiable  {
     }
 }
 
-struct MovementLog: Codable, Equatable, Hashable {
-    var id: Int?
-    var sets: Int?
-    var reps: Int?
-    var load: String?
-    var timestamp: Date?
-    
-    struct MovementLogDto: Codable {
-        var sets: Int?
-        var reps: Int?
-        var load: Decimal?
-    }
-    
-    var dto: MovementLogDto {
-        if let unwrappedLoad = load {
-            return MovementLogDto(sets: sets, reps: reps, load: Decimal(string: unwrappedLoad))
-        } else {
-            return MovementLogDto(sets: sets, reps: reps, load: nil)
-        }
-    }
-}
-
 struct MovementAndLog: Hashable {
     var movement: Movement
     var log: MovementLog
