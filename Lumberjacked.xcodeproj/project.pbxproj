@@ -21,6 +21,7 @@
 		8E5EB9BD2C3CF3D100186172 /* ContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9BC2C3CF3D100186172 /* ContainerView.swift */; };
 		8E5EB9BF2C3D038900186172 /* LogInputView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9BE2C3D038900186172 /* LogInputView-ViewModel.swift */; };
 		8E5EB9C12C3E5A0E00186172 /* MovementLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C02C3E5A0E00186172 /* MovementLog.swift */; };
+		8E5EB9C32C3E5A9800186172 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C22C3E5A9800186172 /* Networking.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		8E5EB9BC2C3CF3D100186172 /* ContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerView.swift; sourceTree = "<group>"; };
 		8E5EB9BE2C3D038900186172 /* LogInputView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogInputView-ViewModel.swift"; sourceTree = "<group>"; };
 		8E5EB9C02C3E5A0E00186172 /* MovementLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementLog.swift; sourceTree = "<group>"; };
+		8E5EB9C22C3E5A9800186172 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 				8E0CA2CA2C3675E400335C57 /* Assets.xcassets */,
 				8E0CA2CC2C3675E400335C57 /* Preview Content */,
 				8E5EB9AB2C3920FA00186172 /* Util.swift */,
+				8E5EB9C22C3E5A9800186172 /* Networking.swift */,
 			);
 			path = Lumberjacked;
 			sourceTree = "<group>";
@@ -218,6 +221,7 @@
 				8E5EB9BD2C3CF3D100186172 /* ContainerView.swift in Sources */,
 				8E5EB9BB2C3CF3C700186172 /* ContainerView-ViewModel.swift in Sources */,
 				8E5EB9A82C38643500186172 /* MovementDetailView.swift in Sources */,
+				8E5EB9C32C3E5A9800186172 /* Networking.swift in Sources */,
 				8E5EB9AC2C3920FA00186172 /* Util.swift in Sources */,
 				8E5EB9AA2C38D72100186172 /* LogInputView.swift in Sources */,
 				8E5EB9B42C3A418500186172 /* MovementDetailView-ViewModel.swift in Sources */,

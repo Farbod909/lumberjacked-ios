@@ -27,61 +27,27 @@ extension LogInputView {
                 return
             }
             
-            let accessToken = "44b0b258a667b0e93aff0f4f3dcc9d37ab04c94f104cbb5a6f4ad8c043ed53a331b5fd7f7b7795ec37a9a285071ef18c"
-
-            let sessionConfiguration = URLSessionConfiguration.default
-            sessionConfiguration.httpAdditionalHeaders = [
-                "Authorization": "Bearer \(accessToken)"
-            ]
-            let session = URLSession(configuration: sessionConfiguration)
-
-            guard let url = URL(string: "http://localhost:3000/api/v1/movement-logs/\(movementLogId)") else {
-                print("Invalid URL")
-                return
-            }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "PATCH"
-                    
-            guard let encoded = try? JSONEncoder().encode(movementLog.dto) else {
-                print("Failed to encode log")
-                return
-            }
-            
-            do {
-                let (data, _) = try await session.upload(for: request, from: encoded)
-            } catch {
-                print("Invalid data")
-            }
+            let _: MovementLog? = await Networking
+                .withDefaultAccessToken()
+                .request(
+                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movement-logs/\(movementLogId)",
+                                                body: movementLog.dto,
+                                                method: .PATCH,
+                                                headers: [
+                                                    ("application/json", "Content-Type")
+                                                ]))
         }
         
         func saveNewLog() async {
-            let accessToken = "44b0b258a667b0e93aff0f4f3dcc9d37ab04c94f104cbb5a6f4ad8c043ed53a331b5fd7f7b7795ec37a9a285071ef18c"
-
-            let sessionConfiguration = URLSessionConfiguration.default
-            sessionConfiguration.httpAdditionalHeaders = [
-                "Authorization": "Bearer \(accessToken)"
-            ]
-            let session = URLSession(configuration: sessionConfiguration)
-
-            guard let url = URL(string: "http://localhost:3000/api/v1/movements/\(movement.id)/logs") else {
-                print("Invalid URL")
-                return
-            }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "POST"
-            
-            guard let encoded = try? JSONEncoder().encode(movementLog.dto) else {
-                print("Failed to encode log")
-                return
-            }
-            
-            do {
-                let (data, _) = try await session.upload(for: request, from: encoded)
-            } catch {
-                print("Invalid data")
-            }
+            let _: MovementLog? = await Networking
+                .withDefaultAccessToken()
+                .request(
+                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movements/\(movement.id)/logs",
+                                                body: movementLog.dto,
+                                                method: .POST,
+                                                headers: [
+                                                    ("application/json", "Content-Type")
+                                                ])) ?? MovementLog()
         }
         
         func deleteLog() async {
@@ -90,26 +56,11 @@ extension LogInputView {
                 return
             }
             
-            let accessToken = "44b0b258a667b0e93aff0f4f3dcc9d37ab04c94f104cbb5a6f4ad8c043ed53a331b5fd7f7b7795ec37a9a285071ef18c"
-
-            let sessionConfiguration = URLSessionConfiguration.default
-            sessionConfiguration.httpAdditionalHeaders = [
-                "Authorization": "Bearer \(accessToken)"
-            ]
-            let session = URLSession(configuration: sessionConfiguration)
-
-            guard let url = URL(string: "http://localhost:3000/api/v1/movement-logs/\(movementLogId)") else {
-                print("Invalid URL")
-                return
-            }
-            var request = URLRequest(url: url)
-            request.httpMethod = "DELETE"
-                            
-            do {
-                let (data, _) = try await session.data(for: request)
-            } catch {
-                print("Invalid data")
-            }
+            let _: MovementLog? = await Networking
+                .withDefaultAccessToken()
+                .request(
+                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movement-logs/\(movementLogId)",
+                                                method: .DELETE)) ?? MovementLog()
         }
 
     }

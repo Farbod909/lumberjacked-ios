@@ -24,6 +24,10 @@ struct Movement: Codable, Hashable, Identifiable  {
     var hasAnyRecommendations: Bool {
         return warmupSets != nil || workingSets != nil || rpe != nil || restTime != nil
     }
+    
+    static func empty() -> Movement {
+        return Movement(id: 0, name: "", split: "", movementLogs: [])
+    }
 }
 
 struct MovementAndLog: Hashable {
