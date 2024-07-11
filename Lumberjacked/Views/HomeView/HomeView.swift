@@ -11,61 +11,59 @@ struct HomeView: View {
     @State var viewModel: ViewModel
     
     var body: some View {
-        NavigationStack(path: $viewModel.container.path) {
-            List {
-                ForEach(viewModel.groupMovementsBySplit(), id: \.self) { split in
-                    Section() {
-                        ForEach(viewModel.getMovementsForSplit(split: split)) { movement in
-                            HStack {
-                                Text(movement.name)
-                                Spacer()
-                                if (!movement.movementLogs.isEmpty) {
-                                    if let reps = movement.movementLogs[0].reps {
-                                        Text(reps.formatted()).frame(minWidth: 28)
-                                    }
-                                    Divider()
-                                    if let load = movement.movementLogs[0].load {
-                                        Text(load).frame(minWidth: 28)
-                                    }
+        List {
+            ForEach(viewModel.groupMovementsBySplit(), id: \.self) { split in
+                Section() {
+                    ForEach(viewModel.getMovementsForSplit(split: split)) { movement in
+                        HStack {
+                            Text(movement.name)
+                            Spacer()
+                            if (!movement.movementLogs.isEmpty) {
+                                if let reps = movement.movementLogs[0].reps {
+                                    Text(reps.formatted()).frame(minWidth: 28)
                                 }
-                                NavigationLink(value: movement) { }
-                                    .frame(maxWidth: 6)
+                                Divider()
+                                if let load = movement.movementLogs[0].load {
+                                    Text(load).frame(minWidth: 28)
+                                }
                             }
+                            NavigationLink(value: movement) { }
+                                .frame(maxWidth: 6)
                         }
-                    } header: {
-                        VStack(alignment: .leading) {
-                            Text(split)
-                                .font(.title)
-                                .textCase(nil)
-                                .bold()
-                                .padding(.bottom, 2)
-                            HStack {
-                                Text("Name")
-                                Spacer()
-                                Text("Most recent")
-                                Text("Reps")
-                                Text("|")
-                                Text("Load").padding(.trailing, 14)
-                            }
-                            .fontWidth(.condensed)
+                    }
+                } header: {
+                    VStack(alignment: .leading) {
+                        Text(split)
+                            .font(.title)
+                            .textCase(nil)
+                            .bold()
+                            .padding(.bottom, 2)
+                        HStack {
+                            Text("Name")
+                            Spacer()
+                            Text("Most recent")
+                            Text("Reps")
+                            Text("|")
+                            Text("Load").padding(.trailing, 14)
                         }
+                        .fontWidth(.condensed)
                     }
                 }
             }
-            .task {
-                await viewModel.loadAllMovements()
+        }
+        .task {
+            await viewModel.loadAllMovements()
+        }
+        .toolbar {
+            Button("New Movement", systemImage: "plus") {
+                //
             }
-            .toolbar {
-                Button("New Movement", systemImage: "plus") {
-                    //
-                }
-            }
-            .navigationDestination(for: Movement.self) { selection in
-                MovementDetailView(
-                    viewModel: MovementDetailView.ViewModel(
-                        container: viewModel.container,
-                        movement: selection))
-            }
+        }
+        .navigationDestination(for: Movement.self) { selection in
+            MovementDetailView(
+                viewModel: MovementDetailView.ViewModel(
+                    container: viewModel.container,
+                    movement: selection))
         }
     }
 }
