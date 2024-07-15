@@ -12,9 +12,9 @@ struct HomeView: View {
     
     var body: some View {
         List {
-            ForEach(viewModel.groupMovementsBySplit(), id: \.self) { split in
+            ForEach(viewModel.getAllSplits(), id: \.self) { split in
                 Section() {
-                    ForEach(viewModel.getMovementsForSplit(split: split)) { movement in
+                    ForEach(viewModel.getMovements(for: split)) { movement in
                         HStack {
                             Text(movement.name)
                             Spacer()

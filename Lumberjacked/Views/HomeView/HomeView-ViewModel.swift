@@ -18,17 +18,32 @@ extension HomeView {
             self.container = container
         }
         
-        func groupMovementsBySplit() -> [String] {
-            var splits = Set<String>()
-            for movement in movements {
-                splits.insert(movement.split)
+        /*
+         Get all unique splits, ordered by most recent log timestamp.
+         */
+        func getAllSplits() -> [String] {
+            var uniqueSplits = Set<String>()
+            var orderedSplits = Array<String>()
+            for movement in movements.sorted(by: {
+                $0.mostRecentLogTimestamp >= $1.mostRecentLogTimestamp
+            }) {
+                if (!uniqueSplits.contains(movement.split)) {
+                    orderedSplits.append(movement.split)
+                    uniqueSplits.insert(movement.split)
+                }
             }
-            return Array(splits)
+            return orderedSplits
         }
 
-        func getMovementsForSplit(split: String) -> [Movement] {
+        /*
+         Get all movements for a given split, ordered by most recent log
+         timestamp.
+         */
+        func getMovements(for split: String) -> [Movement] {
             var splitMovements = [Movement]()
-            for movement in movements {
+            for movement in movements.sorted(by: {
+                $0.mostRecentLogTimestamp >= $1.mostRecentLogTimestamp
+            }) {
                 if movement.split == split {
                     splitMovements.append(movement)
                 }

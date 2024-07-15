@@ -25,6 +25,10 @@ struct Movement: Codable, Hashable, Identifiable  {
         return warmupSets != nil || workingSets != nil || rpe != nil || restTime != nil
     }
     
+    var mostRecentLogTimestamp: Date {
+        return movementLogs.first?.timestamp ?? Date.distantPast
+    }
+    
     static func empty() -> Movement {
         return Movement(id: 0, name: "", split: "", movementLogs: [])
     }
