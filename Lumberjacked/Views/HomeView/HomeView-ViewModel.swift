@@ -5,7 +5,6 @@
 //  Created by Farbod Rafezy on 7/6/24.
 //
 
-import Foundation
 import SwiftUI
 
 extension HomeView {

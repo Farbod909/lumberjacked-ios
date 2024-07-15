@@ -55,8 +55,13 @@ struct HomeView: View {
             await viewModel.loadAllMovements()
         }
         .toolbar {
-            Button("New Movement", systemImage: "plus") {
-                //
+            NavigationLink() {
+                MovementInputView(
+                    viewModel: MovementInputView.ViewModel(
+                        container: viewModel.container,
+                        movement: Movement.empty()))
+            } label: {
+                Label("New movement", systemImage: "plus")
             }
         }
         .navigationDestination(for: Movement.self) { selection in

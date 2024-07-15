@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct MovementDetailView: View {
     @State var viewModel: ViewModel
     
@@ -73,8 +72,12 @@ struct MovementDetailView: View {
         }
         .toolbar {
             HStack {
-                Button("Edit movement", systemImage: "pencil.circle") {
-                    //
+                NavigationLink() {
+                    MovementInputView(
+                        viewModel: MovementInputView.ViewModel(
+                            container: viewModel.container, movement: viewModel.movement))
+                } label: {
+                    Label("Edit movement", systemImage: "pencil.circle")
                 }
                 Button("New log", systemImage: "plus.square.fill") {
                     viewModel.container.path.append(MovementAndLog(movement: viewModel.movement, log: MovementLog()))

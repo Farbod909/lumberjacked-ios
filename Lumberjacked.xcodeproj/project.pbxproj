@@ -22,6 +22,8 @@
 		8E5EB9BF2C3D038900186172 /* LogInputView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9BE2C3D038900186172 /* LogInputView-ViewModel.swift */; };
 		8E5EB9C12C3E5A0E00186172 /* MovementLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C02C3E5A0E00186172 /* MovementLog.swift */; };
 		8E5EB9C32C3E5A9800186172 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C22C3E5A9800186172 /* Networking.swift */; };
+		8E5EB9C62C44F1A300186172 /* MovementInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C52C44F1A300186172 /* MovementInputView.swift */; };
+		8E5EB9C82C44F1B100186172 /* MovementInputView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C72C44F1B100186172 /* MovementInputView-ViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,8 @@
 		8E5EB9BE2C3D038900186172 /* LogInputView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogInputView-ViewModel.swift"; sourceTree = "<group>"; };
 		8E5EB9C02C3E5A0E00186172 /* MovementLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementLog.swift; sourceTree = "<group>"; };
 		8E5EB9C22C3E5A9800186172 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		8E5EB9C52C44F1A300186172 /* MovementInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementInputView.swift; sourceTree = "<group>"; };
+		8E5EB9C72C44F1B100186172 /* MovementInputView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MovementInputView-ViewModel.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +138,7 @@
 				8E5EB9B92C3CF39000186172 /* ContainerView */,
 				8E5EB9AD2C3A138800186172 /* HomeView */,
 				8E5EB9AF2C3A13AD00186172 /* MovementDetailView */,
+				8E5EB9C42C44F18900186172 /* MovementInputView */,
 				8E5EB9AE2C3A139800186172 /* LogInputView */,
 			);
 			path = Views;
@@ -146,6 +151,15 @@
 				8E5EB9BA2C3CF3C700186172 /* ContainerView-ViewModel.swift */,
 			);
 			path = ContainerView;
+			sourceTree = "<group>";
+		};
+		8E5EB9C42C44F18900186172 /* MovementInputView */ = {
+			isa = PBXGroup;
+			children = (
+				8E5EB9C52C44F1A300186172 /* MovementInputView.swift */,
+				8E5EB9C72C44F1B100186172 /* MovementInputView-ViewModel.swift */,
+			);
+			path = MovementInputView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -222,6 +236,7 @@
 				8E5EB9BB2C3CF3C700186172 /* ContainerView-ViewModel.swift in Sources */,
 				8E5EB9A82C38643500186172 /* MovementDetailView.swift in Sources */,
 				8E5EB9C32C3E5A9800186172 /* Networking.swift in Sources */,
+				8E5EB9C62C44F1A300186172 /* MovementInputView.swift in Sources */,
 				8E5EB9AC2C3920FA00186172 /* Util.swift in Sources */,
 				8E5EB9AA2C38D72100186172 /* LogInputView.swift in Sources */,
 				8E5EB9B42C3A418500186172 /* MovementDetailView-ViewModel.swift in Sources */,
@@ -230,6 +245,7 @@
 				8E5EB9BF2C3D038900186172 /* LogInputView-ViewModel.swift in Sources */,
 				8E5EB9C12C3E5A0E00186172 /* MovementLog.swift in Sources */,
 				8E5EB9B22C3A3D4B00186172 /* HomeView-ViewModel.swift in Sources */,
+				8E5EB9C82C44F1B100186172 /* MovementInputView-ViewModel.swift in Sources */,
 				8E5EB98C2C37B34C00186172 /* Movement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
