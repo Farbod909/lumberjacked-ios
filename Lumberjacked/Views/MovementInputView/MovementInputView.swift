@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MovementInputView: View {
     @State var viewModel: ViewModel
+    @State var saveImage = ""
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         Form {
@@ -44,8 +46,22 @@ struct MovementInputView: View {
                     stickyText: "Rest seconds",
                     value: $viewModel.movement.restTime)
             }
-            Button("Save") {
-                //
+            Button {
+                Task {
+                    saveImage = "ellipsis"
+                    if viewModel.movement.id == 0 {
+                        await viewModel.saveNewMovement()
+                    } else {
+                        await viewModel.updateMovement()
+                    }
+                    saveImage = ""
+                    dismiss()
+                }
+            } label: {
+                HStack {
+                    Text("Save")
+                    Image(systemName: saveImage)
+                }
             }
         }
         .listRowSpacing(10)

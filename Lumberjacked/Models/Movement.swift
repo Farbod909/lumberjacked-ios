@@ -32,6 +32,27 @@ struct Movement: Codable, Hashable, Identifiable  {
     static func empty() -> Movement {
         return Movement(id: 0, name: "", split: "", movementLogs: [])
     }
+    
+    struct MovementDTO: Codable {
+        var name: String?
+        var split: String?
+        var description: String?
+        var warmupSets: String?
+        var workingSets: String?
+        var rpe: String?
+        var restTime: Int?
+    }
+    
+    var dto: MovementDTO {
+        return MovementDTO(
+            name: name,
+            split: split,
+            description: description,
+            warmupSets: warmupSets,
+            workingSets: workingSets,
+            rpe: rpe,
+            restTime: restTime)
+    }
 }
 
 struct MovementAndLog: Hashable {
