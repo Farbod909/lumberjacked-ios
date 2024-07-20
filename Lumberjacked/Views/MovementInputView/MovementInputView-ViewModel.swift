@@ -19,10 +19,9 @@ extension MovementInputView {
         }
         
         func saveNewMovement() async {
-            let _: Movement? = await Networking
-                .withDefaultAccessToken()
+            await Networking()
                 .request(
-                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movements",
+                    options: Networking.RequestOptions(url: "/movements",
                                                 body: movement.dto,
                                                 method: .POST,
                                                 headers: [
@@ -31,10 +30,9 @@ extension MovementInputView {
         }
         
         func updateMovement() async {
-            let _: Movement? = await Networking
-                .withDefaultAccessToken()
+            await Networking()
                 .request(
-                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movements/\(movement.id)",
+                    options: Networking.RequestOptions(url: "/movements/\(movement.id)",
                                                 body: movement.dto,
                                                 method: .PATCH,
                                                 headers: [

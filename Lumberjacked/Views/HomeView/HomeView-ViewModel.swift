@@ -51,9 +51,14 @@ extension HomeView {
         }
 
         func loadAllMovements() async {
-            movements = await Networking
-                .withDefaultAccessToken()
-                .request(options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movements")) ?? [Movement]()
+            movements = await Networking()
+                .request(options: Networking.RequestOptions(url: "/movements")) ?? [Movement]()
+        }
+        
+        func logout() async {
+            await Networking().request(
+                options: Networking.RequestOptions(url: "/auth/logout"))
+            UserDefaults.standard.removeObject(forKey: "accessToken")
         }
     }
 }

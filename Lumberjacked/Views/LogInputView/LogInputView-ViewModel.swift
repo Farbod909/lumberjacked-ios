@@ -27,10 +27,9 @@ extension LogInputView {
                 return
             }
             
-            let _: MovementLog? = await Networking
-                .withDefaultAccessToken()
+            await Networking()
                 .request(
-                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movement-logs/\(movementLogId)",
+                    options: Networking.RequestOptions(url: "/movement-logs/\(movementLogId)",
                                                 body: movementLog.dto,
                                                 method: .PATCH,
                                                 headers: [
@@ -39,15 +38,14 @@ extension LogInputView {
         }
         
         func saveNewLog() async {
-            let _: MovementLog? = await Networking
-                .withDefaultAccessToken()
+            await Networking()
                 .request(
-                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movements/\(movement.id)/logs",
+                    options: Networking.RequestOptions(url: "/movements/\(movement.id)/logs",
                                                 body: movementLog.dto,
                                                 method: .POST,
                                                 headers: [
                                                     ("application/json", "Content-Type")
-                                                ])) ?? MovementLog()
+                                                ]))
         }
         
         func deleteLog() async {
@@ -56,11 +54,10 @@ extension LogInputView {
                 return
             }
             
-            let _: MovementLog? = await Networking
-                .withDefaultAccessToken()
+            await Networking()
                 .request(
-                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movement-logs/\(movementLogId)",
-                                                method: .DELETE)) ?? MovementLog()
+                    options: Networking.RequestOptions(url: "/movement-logs/\(movementLogId)",
+                                                method: .DELETE))
         }
 
     }

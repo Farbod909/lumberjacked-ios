@@ -19,10 +19,9 @@ extension MovementDetailView {
         }
         
         func loadMovementDetail(id: Int) async {
-            movement = await Networking
-                .withDefaultAccessToken()
+            movement = await Networking()
                 .request(
-                    options: Networking.RequestOptions(url: "http://localhost:3000/api/v1/movements/\(id)"))
+                    options: Networking.RequestOptions(url: "/movements/\(id)"))
             ?? Movement.empty()
         }
 

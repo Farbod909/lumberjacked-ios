@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @State var viewModel: ViewModel
+    @State var isShowingLoginSheet = false
     
     var body: some View {
         List {
@@ -55,13 +56,31 @@ struct HomeView: View {
             await viewModel.loadAllMovements()
         }
         .toolbar {
-            NavigationLink() {
-                MovementInputView(
-                    viewModel: MovementInputView.ViewModel(
-                        container: viewModel.container,
-                        movement: Movement.empty()))
-            } label: {
-                Label("New movement", systemImage: "plus")
+            HStack {
+                if let accessToken = UserDefaults.standard.string(forKey: "accessToken") {
+                    Button {
+                        Task {
+                            await viewModel.logout()
+                        }
+                    } label: {
+                        Text("Logout")
+                    }
+                } else{
+                    Button {
+                        UserDefaults.standard.removeObject(forKey: "accessToken")
+                        isShowingLoginSheet = true
+                    } label: {
+                        Text("Login")
+                    }
+                }
+                NavigationLink() {
+                    MovementInputView(
+                        viewModel: MovementInputView.ViewModel(
+                            container: viewModel.container,
+                            movement: Movement.empty()))
+                } label: {
+                    Label("New movement", systemImage: "plus")
+                }
             }
         }
         .navigationDestination(for: Movement.self) { selection in
@@ -69,6 +88,9 @@ struct HomeView: View {
                 viewModel: MovementDetailView.ViewModel(
                     container: viewModel.container,
                     movement: selection))
+        }
+        .sheet(isPresented: $isShowingLoginSheet) {
+            LoginSheetView(viewModel: LoginSheetView.ViewModel())
         }
     }
 }

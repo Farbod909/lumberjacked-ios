@@ -8,9 +8,7 @@
 import Foundation
 
 class Networking {
-    
-    static let DEFAULT_ACCESS_TOKEN = "44b0b258a667b0e93aff0f4f3dcc9d37ab04c94f104cbb5a6f4ad8c043ed53a331b5fd7f7b7795ec37a9a285071ef18c"
-
+        
     struct RequestOptions {
         enum HTTPMethod {
             case GET, POST, PATCH, DELETE
@@ -22,22 +20,11 @@ class Networking {
         var headers = [(String?, String)]()
     }
     
+    static let host = "https://lumberjacked-dev-22i67fnysq-wl.a.run.app/api/v1"
     var sessionConfiguration: URLSessionConfiguration
     let decoder: JSONDecoder
-    let session: URLSession
-    
-    static func withDefaultAccessToken() -> Networking {
-        return Networking(accessToken: Networking.DEFAULT_ACCESS_TOKEN)
-    }
-        
-    private convenience init(sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default, accessToken: String) {
-        sessionConfiguration.httpAdditionalHeaders = [
-            "Authorization": "Bearer \(accessToken)"
-        ]
-        self.init(sessionConfiguration: sessionConfiguration)
-    }
-    
-    private init(sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
+                
+    init(sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -46,12 +33,10 @@ class Networking {
         self.sessionConfiguration = sessionConfiguration
         self.decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        
-        self.session = URLSession(configuration: self.sessionConfiguration)
     }
     
     func request<ResponseType: Decodable>(options: RequestOptions) async -> ResponseType? {
-        guard let url = URL(string: options.url) else {
+        guard let url = URL(string: "\(Networking.host)\(options.url)") else {
             print("Invalid URL")
             return nil
         }
@@ -78,6 +63,13 @@ class Networking {
         case .none: break // do nothing
         }
         
+        if let accessToken = UserDefaults.standard.string(forKey: "accessToken") {
+            self.sessionConfiguration.httpAdditionalHeaders = [
+                "Authorization": "Bearer \(accessToken)"
+            ]
+        }
+        let session = URLSession(configuration: self.sessionConfiguration)
+        
         do {
             let data: Data
             if let requestBody = options.body {
@@ -99,4 +91,57 @@ class Networking {
         }
         return nil
     }
+    
+    func request(options: RequestOptions) async {
+        guard let url = URL(string: "\(Networking.host)\(options.url)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+            
+        for headerTuple in options.headers {
+            request.setValue(headerTuple.0, forHTTPHeaderField: headerTuple.1)
+        }
+        
+        switch options.method {
+        case .GET:
+            request.httpMethod = "GET"
+            break
+        case .POST:
+            request.httpMethod = "POST"
+            break
+        case .PATCH:
+            request.httpMethod = "PATCH"
+            break
+        case .DELETE:
+            request.httpMethod = "DELETE"
+            break
+        case .none: break // do nothing
+        }
+        
+        if let accessToken = UserDefaults.standard.string(forKey: "accessToken") {
+            self.sessionConfiguration.httpAdditionalHeaders = [
+                "Authorization": "Bearer \(accessToken)"
+            ]
+        }
+        let session = URLSession(configuration: self.sessionConfiguration)
+        
+        do {
+            if let requestBody = options.body {
+                guard let encoded = try? JSONEncoder().encode(requestBody) else {
+                    print("Failed to encode data")
+                    return
+                }
+
+                let _ = try await session.upload(for: request, from: encoded)
+            } else {
+                let _ = try await session.data(for: request)
+            }
+        } catch {
+            print("Invalid data")
+        }
+        return
+    }
+
 }
