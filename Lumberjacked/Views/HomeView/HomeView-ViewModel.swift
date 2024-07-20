@@ -58,7 +58,7 @@ extension HomeView {
         func logout() async {
             await Networking().request(
                 options: Networking.RequestOptions(url: "/auth/logout"))
-            UserDefaults.standard.removeObject(forKey: "accessToken")
+            Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
         }
     }
 }

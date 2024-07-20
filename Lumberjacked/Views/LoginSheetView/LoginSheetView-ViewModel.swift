@@ -24,7 +24,7 @@ extension LoginSheetView {
                                                     ("application/json", "Content-Type")
                                                 ]))
             if let loginResponse {
-                UserDefaults.standard.set(loginResponse.accessToken, forKey: "accessToken")
+                Keychain.standard.save(loginResponse.accessToken, service: "accessToken", account: "lumberjacked")
             }
 
         }

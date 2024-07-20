@@ -57,7 +57,7 @@ struct HomeView: View {
         }
         .toolbar {
             HStack {
-                if let accessToken = UserDefaults.standard.string(forKey: "accessToken") {
+                if let accessToken = Keychain.standard.read(service: "accessToken", account: "lumberjacked") {
                     Button {
                         Task {
                             await viewModel.logout()
@@ -67,7 +67,6 @@ struct HomeView: View {
                     }
                 } else{
                     Button {
-                        UserDefaults.standard.removeObject(forKey: "accessToken")
                         isShowingLoginSheet = true
                     } label: {
                         Text("Login")

@@ -63,7 +63,8 @@ class Networking {
         case .none: break // do nothing
         }
         
-        if let accessToken = UserDefaults.standard.string(forKey: "accessToken") {
+
+        if let accessToken = Keychain.standard.read(service: "accessToken", account: "lumberjacked", type: String.self) {
             self.sessionConfiguration.httpAdditionalHeaders = [
                 "Authorization": "Bearer \(accessToken)"
             ]
@@ -120,7 +121,7 @@ class Networking {
         case .none: break // do nothing
         }
         
-        if let accessToken = UserDefaults.standard.string(forKey: "accessToken") {
+        if let accessToken = Keychain.standard.read(service: "accessToken", account: "lumberjacked", type: String.self) {
             self.sessionConfiguration.httpAdditionalHeaders = [
                 "Authorization": "Bearer \(accessToken)"
             ]
