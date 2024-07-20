@@ -20,10 +20,14 @@ struct LogInputView: View {
             Button {
                 Task {
                     viewModel.saveImage = "ellipsis"
-                    if viewModel.movementLog.id == nil {
-                        await viewModel.saveNewLog()
-                    } else {
-                        await viewModel.updateLog()
+                    do {
+                        if viewModel.movementLog.id == nil {
+                            try await viewModel.saveNewLog()
+                        } else {
+                            try await viewModel.updateLog()
+                        }
+                    } catch {
+                        print(error)
                     }
                     viewModel.saveImage = ""
                     viewModel.container.path.removeLast()
@@ -39,8 +43,12 @@ struct LogInputView: View {
             if viewModel.movementLog.id != nil {
                 Button("Delete", systemImage: "trash") {
                     Task {
-                        await viewModel.deleteLog()
-                        viewModel.container.path.removeLast()
+                        do {
+                            try await viewModel.deleteLog()
+                            viewModel.container.path.removeLast()
+                        } catch {
+                            print(error)
+                        }
                     }
                 }
             }

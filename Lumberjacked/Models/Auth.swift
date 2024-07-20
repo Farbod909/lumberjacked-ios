@@ -13,3 +13,12 @@ struct LoginRequest: Codable {
 struct LoginResponse: Codable {
     var accessToken: String
 }
+
+struct SignupRequest: Codable {
+    var firstName: String
+    var lastName: String
+    var email: String
+    var password: String
+    var passwordConfirmation: String
+    
+}

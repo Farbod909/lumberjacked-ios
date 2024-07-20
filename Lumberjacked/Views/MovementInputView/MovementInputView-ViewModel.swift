@@ -18,26 +18,26 @@ extension MovementInputView {
             self.movement = movement
         }
         
-        func saveNewMovement() async {
-            await Networking()
+        func saveNewMovement() async throws {
+            try await Networking()
                 .request(
                     options: Networking.RequestOptions(url: "/movements",
-                                                body: movement.dto,
-                                                method: .POST,
-                                                headers: [
-                                                    ("application/json", "Content-Type")
-                                                ]))
+                                                       body: movement.dto,
+                                                       method: .POST,
+                                                       headers: [
+                                                        ("application/json", "Content-Type")
+                                                       ]))
         }
         
-        func updateMovement() async {
-            await Networking()
+        func updateMovement() async throws {
+            try await Networking()
                 .request(
                     options: Networking.RequestOptions(url: "/movements/\(movement.id)",
-                                                body: movement.dto,
-                                                method: .PATCH,
-                                                headers: [
-                                                    ("application/json", "Content-Type")
-                                                ]))
+                                                       body: movement.dto,
+                                                       method: .PATCH,
+                                                       headers: [
+                                                        ("application/json", "Content-Type")
+                                                       ]))
         }
     }
 }

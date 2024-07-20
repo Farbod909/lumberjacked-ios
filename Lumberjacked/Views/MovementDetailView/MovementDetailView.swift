@@ -68,7 +68,7 @@ struct MovementDetailView: View {
             Spacer()
         }
         .task {
-            await viewModel.loadMovementDetail(id: viewModel.movement.id)
+            try? await viewModel.loadMovementDetail(id: viewModel.movement.id)
         }
         .toolbar {
             HStack {

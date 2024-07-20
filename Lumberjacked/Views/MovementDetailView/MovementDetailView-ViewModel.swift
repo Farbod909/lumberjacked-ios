@@ -18,8 +18,8 @@ extension MovementDetailView {
             self.movement = movement
         }
         
-        func loadMovementDetail(id: Int) async {
-            movement = await Networking()
+        func loadMovementDetail(id: Int) async throws {
+            movement = try await Networking()
                 .request(
                     options: Networking.RequestOptions(url: "/movements/\(id)"))
             ?? Movement.empty()

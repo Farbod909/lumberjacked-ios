@@ -54,7 +54,9 @@ struct HomeView: View {
             }
         }
         .task(id: isLoggedIn) {
-            await viewModel.loadAllMovements()
+            if isLoggedIn {
+                try? await viewModel.loadAllMovements()
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -70,9 +72,13 @@ struct HomeView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     Task {
-                        await viewModel.logout()
-                        isLoggedIn = false
-                        isShowingLoginSheet = true
+                        do {
+                            try await viewModel.logout()
+                            isLoggedIn = false
+                            isShowingLoginSheet = true
+                        } catch {
+                            print(error)
+                        }
                     }
                 } label: {
                     Text("Logout")
@@ -92,10 +98,11 @@ struct HomeView: View {
                     isLoggedIn = true
                 }
             }, content: {
-                LoginView(viewModel: LoginView.ViewModel())
+                LoginSignupView(viewModel: LoginSignupView.ViewModel())
             })
         .onAppear() {
             if Keychain.standard.read(service: "accessToken", account: "lumberjacked") == nil {
+                isLoggedIn = false
                 isShowingLoginSheet = true
             }
         }

@@ -21,43 +21,43 @@ extension LogInputView {
             self.movement = movement
         }
         
-        func updateLog() async {
+        func updateLog() async throws {
             guard let movementLogId = movementLog.id else {
                 print("Cannot update movement log with no id.")
                 return
             }
             
-            await Networking()
+            try await Networking()
                 .request(
                     options: Networking.RequestOptions(url: "/movement-logs/\(movementLogId)",
-                                                body: movementLog.dto,
-                                                method: .PATCH,
-                                                headers: [
-                                                    ("application/json", "Content-Type")
-                                                ]))
+                                                       body: movementLog.dto,
+                                                       method: .PATCH,
+                                                       headers: [
+                                                        ("application/json", "Content-Type")
+                                                       ]))
         }
         
-        func saveNewLog() async {
-            await Networking()
+        func saveNewLog() async throws {
+            try await Networking()
                 .request(
                     options: Networking.RequestOptions(url: "/movements/\(movement.id)/logs",
-                                                body: movementLog.dto,
-                                                method: .POST,
-                                                headers: [
-                                                    ("application/json", "Content-Type")
-                                                ]))
+                                                       body: movementLog.dto,
+                                                       method: .POST,
+                                                       headers: [
+                                                        ("application/json", "Content-Type")
+                                                       ]))
         }
         
-        func deleteLog() async {
+        func deleteLog() async throws {
             guard let movementLogId = movementLog.id else {
                 print("Cannot delete movement log with no id.")
                 return
             }
             
-            await Networking()
+            try await Networking()
                 .request(
                     options: Networking.RequestOptions(url: "/movement-logs/\(movementLogId)",
-                                                method: .DELETE))
+                                                       method: .DELETE))
         }
 
     }

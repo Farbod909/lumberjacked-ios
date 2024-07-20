@@ -7,6 +7,24 @@
 
 import Foundation
 
+struct HttpError: Error {
+    var statusCode: Int
+    var error: String
+    var messages: [String]
+}
+
+struct ErrorResponseMultiMessage: Codable {
+    var statusCode: Int
+    var error: String
+    var message: [String]
+}
+
+struct ErrorResponseSingleMessage: Codable {
+    var statusCode: Int
+    var error: String
+    var message: String
+}
+
 class Networking {
         
     struct RequestOptions {
@@ -35,7 +53,7 @@ class Networking {
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
     }
     
-    func request<ResponseType: Decodable>(options: RequestOptions) async -> ResponseType? {
+    func request<ResponseType: Decodable>(options: RequestOptions) async throws -> ResponseType? {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
             print("Invalid URL")
             return nil
@@ -71,29 +89,41 @@ class Networking {
         }
         let session = URLSession(configuration: self.sessionConfiguration)
         
+        var data = Data()
+        var response = URLResponse()
         do {
-            let data: Data
             if let requestBody = options.body {
                 guard let encoded = try? JSONEncoder().encode(requestBody) else {
                     print("Failed to encode data")
                     return nil
                 }
-
-                (data, _) = try await session.upload(for: request, from: encoded)
+                
+                (data, response) = try await session.upload(for: request, from: encoded)
             } else {
-                (data, _) = try await session.data(for: request)
-            }
-                        
-            if let decodedResponse = try? decoder.decode(ResponseType.self, from: data) {
-                return decodedResponse
+                (data, response) = try await session.data(for: request)
             }
         } catch {
-            print("Invalid data")
+            print("Failed to fetch data")
         }
-        return nil
+            
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            if let errorResponse = try? decoder.decode(ErrorResponseMultiMessage.self, from: data) {
+                throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: errorResponse.message)
+            }
+            if let errorResponse = try? decoder.decode(ErrorResponseSingleMessage.self, from: data) {
+                throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: [errorResponse.message])
+            }
+        }
+                
+        guard let decodedResponse = try? decoder.decode(ResponseType.self, from: data) else {
+            print("Failed to decode data")
+            return nil
+        }
+        
+        return decodedResponse
     }
     
-    func request(options: RequestOptions) async {
+    func request(options: RequestOptions) async throws {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
             print("Invalid URL")
             return
@@ -128,6 +158,8 @@ class Networking {
         }
         let session = URLSession(configuration: self.sessionConfiguration)
         
+        var response = URLResponse()
+        var data = Data()
         do {
             if let requestBody = options.body {
                 guard let encoded = try? JSONEncoder().encode(requestBody) else {
@@ -135,13 +167,23 @@ class Networking {
                     return
                 }
 
-                let _ = try await session.upload(for: request, from: encoded)
+                (data, response) = try await session.upload(for: request, from: encoded)
             } else {
-                let _ = try await session.data(for: request)
+                (data, response) = try await session.data(for: request)
             }
         } catch {
-            print("Invalid data")
+            print("Failed to fetch data")
         }
+        
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            if let errorResponse = try? decoder.decode(ErrorResponseMultiMessage.self, from: data) {
+                throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: errorResponse.message)
+            }
+            if let errorResponse = try? decoder.decode(ErrorResponseSingleMessage.self, from: data) {
+                throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: [errorResponse.message])
+            }
+        }
+
         return
     }
 

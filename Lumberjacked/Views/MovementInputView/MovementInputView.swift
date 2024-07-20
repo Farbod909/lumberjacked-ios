@@ -49,13 +49,17 @@ struct MovementInputView: View {
             Button {
                 Task {
                     saveImage = "ellipsis"
-                    if viewModel.movement.id == 0 {
-                        await viewModel.saveNewMovement()
-                    } else {
-                        await viewModel.updateMovement()
+                    do {
+                        if viewModel.movement.id == 0 {
+                            try await viewModel.saveNewMovement()
+                        } else {
+                            try await viewModel.updateMovement()
+                        }
+                        saveImage = ""
+                        dismiss()
+                    } catch {
+                        print(error)
                     }
-                    saveImage = ""
-                    dismiss()
                 }
             } label: {
                 HStack {

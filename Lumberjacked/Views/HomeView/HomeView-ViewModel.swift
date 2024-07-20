@@ -50,13 +50,13 @@ extension HomeView {
             return splitMovements
         }
 
-        func loadAllMovements() async {
-            movements = await Networking()
+        func loadAllMovements() async throws {
+            movements = try await Networking()
                 .request(options: Networking.RequestOptions(url: "/movements")) ?? [Movement]()
         }
         
-        func logout() async {
-            await Networking().request(
+        func logout() async throws {
+            try await Networking().request(
                 options: Networking.RequestOptions(url: "/auth/logout"))
             Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
         }
