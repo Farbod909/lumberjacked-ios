@@ -24,9 +24,9 @@
 		8E5EB9C32C3E5A9800186172 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C22C3E5A9800186172 /* Networking.swift */; };
 		8E5EB9C62C44F1A300186172 /* MovementInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C52C44F1A300186172 /* MovementInputView.swift */; };
 		8E5EB9C82C44F1B100186172 /* MovementInputView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C72C44F1B100186172 /* MovementInputView-ViewModel.swift */; };
-		8E5EB9CA2C4A26DB00186172 /* LoginSheetView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C92C4A26DB00186172 /* LoginSheetView-ViewModel.swift */; };
+		8E5EB9CA2C4A26DB00186172 /* LoginView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9C92C4A26DB00186172 /* LoginView-ViewModel.swift */; };
 		8E5EB9CC2C4A30CD00186172 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9CB2C4A30CD00186172 /* Auth.swift */; };
-		8E5EB9CE2C4B51B900186172 /* LoginSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9CD2C4B51B900186172 /* LoginSheetView.swift */; };
+		8E5EB9CE2C4B51B900186172 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9CD2C4B51B900186172 /* LoginView.swift */; };
 		8E5EB9D12C4B79B300186172 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9D02C4B79B300186172 /* Keychain.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,9 +49,9 @@
 		8E5EB9C22C3E5A9800186172 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		8E5EB9C52C44F1A300186172 /* MovementInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementInputView.swift; sourceTree = "<group>"; };
 		8E5EB9C72C44F1B100186172 /* MovementInputView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MovementInputView-ViewModel.swift"; sourceTree = "<group>"; };
-		8E5EB9C92C4A26DB00186172 /* LoginSheetView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginSheetView-ViewModel.swift"; sourceTree = "<group>"; };
+		8E5EB9C92C4A26DB00186172 /* LoginView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginView-ViewModel.swift"; sourceTree = "<group>"; };
 		8E5EB9CB2C4A30CD00186172 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
-		8E5EB9CD2C4B51B900186172 /* LoginSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSheetView.swift; sourceTree = "<group>"; };
+		8E5EB9CD2C4B51B900186172 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		8E5EB9D02C4B79B300186172 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,7 +147,7 @@
 			children = (
 				8E5EB9B92C3CF39000186172 /* ContainerView */,
 				8E5EB9AD2C3A138800186172 /* HomeView */,
-				8E5EB9CF2C4B51CF00186172 /* LoginSheetView */,
+				8E5EB9CF2C4B51CF00186172 /* LoginView */,
 				8E5EB9AF2C3A13AD00186172 /* MovementDetailView */,
 				8E5EB9C42C44F18900186172 /* MovementInputView */,
 				8E5EB9AE2C3A139800186172 /* LogInputView */,
@@ -173,13 +173,13 @@
 			path = MovementInputView;
 			sourceTree = "<group>";
 		};
-		8E5EB9CF2C4B51CF00186172 /* LoginSheetView */ = {
+		8E5EB9CF2C4B51CF00186172 /* LoginView */ = {
 			isa = PBXGroup;
 			children = (
-				8E5EB9C92C4A26DB00186172 /* LoginSheetView-ViewModel.swift */,
-				8E5EB9CD2C4B51B900186172 /* LoginSheetView.swift */,
+				8E5EB9C92C4A26DB00186172 /* LoginView-ViewModel.swift */,
+				8E5EB9CD2C4B51B900186172 /* LoginView.swift */,
 			);
-			path = LoginSheetView;
+			path = LoginView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,10 +267,10 @@
 				8E5EB9BF2C3D038900186172 /* LogInputView-ViewModel.swift in Sources */,
 				8E5EB9C12C3E5A0E00186172 /* MovementLog.swift in Sources */,
 				8E5EB9B22C3A3D4B00186172 /* HomeView-ViewModel.swift in Sources */,
-				8E5EB9CE2C4B51B900186172 /* LoginSheetView.swift in Sources */,
+				8E5EB9CE2C4B51B900186172 /* LoginView.swift in Sources */,
 				8E5EB9C82C44F1B100186172 /* MovementInputView-ViewModel.swift in Sources */,
 				8E5EB98C2C37B34C00186172 /* Movement.swift in Sources */,
-				8E5EB9CA2C4A26DB00186172 /* LoginSheetView-ViewModel.swift in Sources */,
+				8E5EB9CA2C4A26DB00186172 /* LoginView-ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

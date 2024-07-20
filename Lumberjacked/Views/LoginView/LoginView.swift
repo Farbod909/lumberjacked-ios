@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LoginSheetView: View {
+struct LoginView: View {
     @State var viewModel: ViewModel
     @Environment(\.dismiss) var dismiss
 
@@ -24,6 +24,6 @@ struct LoginSheetView: View {
                 }
             }
         }
-
+        .interactiveDismissDisabled()
     }
 }

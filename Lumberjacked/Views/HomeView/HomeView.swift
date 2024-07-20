@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @State var viewModel: ViewModel
     @State var isShowingLoginSheet = false
+    @State var isLoggedIn = Keychain.standard.read(service: "accessToken", account: "lumberjacked") != nil
     
     var body: some View {
         List {
@@ -52,26 +53,11 @@ struct HomeView: View {
                 }
             }
         }
-        .task {
+        .task(id: isLoggedIn) {
             await viewModel.loadAllMovements()
         }
         .toolbar {
-            HStack {
-                if let accessToken = Keychain.standard.read(service: "accessToken", account: "lumberjacked") {
-                    Button {
-                        Task {
-                            await viewModel.logout()
-                        }
-                    } label: {
-                        Text("Logout")
-                    }
-                } else{
-                    Button {
-                        isShowingLoginSheet = true
-                    } label: {
-                        Text("Login")
-                    }
-                }
+            ToolbarItem(placement: .topBarLeading) {
                 NavigationLink() {
                     MovementInputView(
                         viewModel: MovementInputView.ViewModel(
@@ -81,6 +67,17 @@ struct HomeView: View {
                     Label("New movement", systemImage: "plus")
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Task {
+                        await viewModel.logout()
+                        isLoggedIn = false
+                        isShowingLoginSheet = true
+                    }
+                } label: {
+                    Text("Logout")
+                }
+            }
         }
         .navigationDestination(for: Movement.self) { selection in
             MovementDetailView(
@@ -88,8 +85,19 @@ struct HomeView: View {
                     container: viewModel.container,
                     movement: selection))
         }
-        .sheet(isPresented: $isShowingLoginSheet) {
-            LoginSheetView(viewModel: LoginSheetView.ViewModel())
+        .sheet(
+            isPresented: $isShowingLoginSheet,
+            onDismiss: {
+                Task {
+                    isLoggedIn = true
+                }
+            }, content: {
+                LoginView(viewModel: LoginView.ViewModel())
+            })
+        .onAppear() {
+            if Keychain.standard.read(service: "accessToken", account: "lumberjacked") == nil {
+                isShowingLoginSheet = true
+            }
         }
     }
 }

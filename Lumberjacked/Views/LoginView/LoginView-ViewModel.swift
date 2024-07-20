@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension LoginSheetView {
+extension LoginView {
     @Observable
     class ViewModel {
         var loginEmail = ""
