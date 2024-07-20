@@ -10,6 +10,9 @@ import SwiftUI
 struct LogInputView: View {
     @State var viewModel: ViewModel
     
+    @State var showErrorAlert = false
+    @State var errorAlertItem = ErrorAlertItem()
+    
     var body: some View {
         Form {
             Section {
@@ -26,8 +29,10 @@ struct LogInputView: View {
                         } else {
                             try await viewModel.updateLog()
                         }
-                    } catch {
-                        print(error)
+                    } catch let error as HttpError {
+                        errorAlertItem = ErrorAlertItem(
+                            title: error.error, messages: error.messages)
+                        showErrorAlert = true
                     }
                     viewModel.saveImage = ""
                     viewModel.container.path.removeLast()
@@ -46,13 +51,16 @@ struct LogInputView: View {
                         do {
                             try await viewModel.deleteLog()
                             viewModel.container.path.removeLast()
-                        } catch {
-                            print(error)
+                        } catch let error as HttpError {
+                            errorAlertItem = ErrorAlertItem(
+                                title: error.error, messages: error.messages)
+                            showErrorAlert = true
                         }
                     }
                 }
             }
         }
         .navigationTitle(viewModel.movementLog.timestamp?.formatted(date: .abbreviated, time:.omitted) ?? "New Log")
+        .alert(errorAlertItem, isPresented: $showErrorAlert)
     }
 }

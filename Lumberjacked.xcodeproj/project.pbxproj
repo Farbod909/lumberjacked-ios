@@ -28,6 +28,7 @@
 		8E5EB9CC2C4A30CD00186172 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9CB2C4A30CD00186172 /* Auth.swift */; };
 		8E5EB9CE2C4B51B900186172 /* LoginSignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9CD2C4B51B900186172 /* LoginSignupView.swift */; };
 		8E5EB9D12C4B79B300186172 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5EB9D02C4B79B300186172 /* Keychain.swift */; };
+		8E665BBF2C4C729000BCB795 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E665BBE2C4C729000BCB795 /* Alert.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 		8E5EB9CB2C4A30CD00186172 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		8E5EB9CD2C4B51B900186172 /* LoginSignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSignupView.swift; sourceTree = "<group>"; };
 		8E5EB9D02C4B79B300186172 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		8E665BBE2C4C729000BCB795 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 				8E5EB9AB2C3920FA00186172 /* Util.swift */,
 				8E5EB9C22C3E5A9800186172 /* Networking.swift */,
 				8E5EB9D02C4B79B300186172 /* Keychain.swift */,
+				8E665BBE2C4C729000BCB795 /* Alert.swift */,
 			);
 			path = Lumberjacked;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 				8E5EB9CE2C4B51B900186172 /* LoginSignupView.swift in Sources */,
 				8E5EB9C82C44F1B100186172 /* MovementInputView-ViewModel.swift in Sources */,
 				8E5EB98C2C37B34C00186172 /* Movement.swift in Sources */,
+				8E665BBF2C4C729000BCB795 /* Alert.swift in Sources */,
 				8E5EB9CA2C4A26DB00186172 /* LoginSignupView-ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

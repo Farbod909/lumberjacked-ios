@@ -10,6 +10,10 @@ import SwiftUI
 struct MovementInputView: View {
     @State var viewModel: ViewModel
     @State var saveImage = ""
+    
+    @State var showErrorAlert = false
+    @State var errorAlertItem = ErrorAlertItem()
+    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -57,8 +61,10 @@ struct MovementInputView: View {
                         }
                         saveImage = ""
                         dismiss()
-                    } catch {
-                        print(error)
+                    } catch let error as HttpError {
+                        errorAlertItem = ErrorAlertItem(
+                            title: error.error, messages: error.messages)
+                        showErrorAlert = true
                     }
                 }
             } label: {
@@ -71,6 +77,7 @@ struct MovementInputView: View {
         .listRowSpacing(10)
         .navigationTitle(viewModel.movement.id == 0 ? 
                          "New Movement" : viewModel.movement.name)
+        .alert(errorAlertItem, isPresented: $showErrorAlert)
     }
 }
 
