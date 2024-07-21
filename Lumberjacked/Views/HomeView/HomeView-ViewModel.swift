@@ -58,9 +58,22 @@ extension HomeView {
             return splitMovements
         }
 
-        func loadAllMovements() async throws {
-            movements = try await Networking()
-                .request(options: Networking.RequestOptions(url: "/movements")) ?? [Movement]()
+        func attemptLoadAllMovements() async {
+            if isLoggedIn {
+                do {
+                    movements = try await Networking()
+                        .request(options: Networking.RequestOptions(url: "/movements")) ?? [Movement]()
+                } catch let error as HttpError {
+                    errorAlertItem = ErrorAlertItem(
+                        title: error.error, messages: error.messages)
+                    showErrorAlert = true
+                } catch {
+                    errorAlertItem = ErrorAlertItem(
+                        title: "Unknown Error", messages: [error.localizedDescription])
+                    showErrorAlert = true
+                }
+                isLoadingMovements = false
+            }
         }
                 
         func attemptLogout() async {

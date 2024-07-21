@@ -16,50 +16,9 @@ struct HomeView: View {
                 ProgressView()
             } else {
                 if viewModel.movements.isEmpty {
-                    VStack {
-                        NewMovementLink(container: viewModel.container)
-                    }
+                    NewMovementLink(viewModel: viewModel)
                 } else {
-                    List {
-                        ForEach(viewModel.getAllSplits(), id: \.self) { split in
-                            Section() {
-                                ForEach(viewModel.getMovements(for: split)) { movement in
-                                    HStack {
-                                        Text(movement.name)
-                                        Spacer()
-                                        if (!movement.movementLogs.isEmpty) {
-                                            if let reps = movement.movementLogs[0].reps {
-                                                Text(reps.formatted()).frame(minWidth: 36)
-                                            }
-                                            Divider()
-                                            if let load = movement.movementLogs[0].load {
-                                                Text(load).frame(minWidth: 36)
-                                            }
-                                        }
-                                        NavigationLink(value: movement) { }
-                                            .frame(maxWidth: 6)
-                                    }
-                                }
-                            } header: {
-                                VStack(alignment: .leading) {
-                                    Text(split)
-                                        .font(.title)
-                                        .textCase(nil)
-                                        .bold()
-                                        .padding(.bottom, 2)
-                                    HStack {
-                                        Text("Name")
-                                        Spacer()
-                                        Text("Most recent")
-                                        Text("Reps")
-                                        Text("+")
-                                        Text("Load").padding(.trailing, 22)
-                                    }
-                                    .fontWidth(.condensed)
-                                }
-                            }
-                        }
-                    }
+                    MovementsListView(viewModel: viewModel)
                     .navigationDestination(for: Movement.self) { selection in
                         MovementDetailView(
                             viewModel: MovementDetailView.ViewModel(
@@ -70,14 +29,11 @@ struct HomeView: View {
             }
         }
         .task(id: viewModel.isLoggedIn) {
-            if viewModel.isLoggedIn {
-                try? await viewModel.loadAllMovements()
-                viewModel.isLoadingMovements = false
-            }
+            await viewModel.attemptLoadAllMovements()
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                NewMovementLink(container: viewModel.container)
+                NewMovementLink(viewModel: viewModel)
             }
             ToolbarItem(placement: .topBarLeading) {
                 Button {
@@ -103,14 +59,61 @@ struct HomeView: View {
     }
 }
 
-struct NewMovementLink: View {
-    var container: ContainerView.ViewModel
+struct MovementsListView: View {
+    var viewModel: HomeView.ViewModel
     
+    var body: some View {
+        List {
+            ForEach(viewModel.getAllSplits(), id: \.self) { split in
+                Section() {
+                    ForEach(viewModel.getMovements(for: split)) { movement in
+                        HStack {
+                            Text(movement.name)
+                            Spacer()
+                            if (!movement.movementLogs.isEmpty) {
+                                if let reps = movement.movementLogs[0].reps {
+                                    Text(reps.formatted()).frame(minWidth: 36)
+                                }
+                                Divider()
+                                if let load = movement.movementLogs[0].load {
+                                    Text(load).frame(minWidth: 36)
+                                }
+                            }
+                            NavigationLink(value: movement) { }
+                                .frame(maxWidth: 6)
+                        }
+                    }
+                } header: {
+                    VStack(alignment: .leading) {
+                        Text(split)
+                            .font(.title)
+                            .textCase(nil)
+                            .bold()
+                            .padding(.bottom, 2)
+                        HStack {
+                            Text("Name")
+                            Spacer()
+                            Text("Most recent")
+                            Text("Reps")
+                            Text("+")
+                            Text("Load").padding(.trailing, 22)
+                        }
+                        .fontWidth(.condensed)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct NewMovementLink: View {
+    var viewModel: HomeView.ViewModel
+
     var body: some View {
         NavigationLink() {
             MovementInputView(
                 viewModel: MovementInputView.ViewModel(
-                    container: container,
+                    container: viewModel.container,
                     movement: Movement.empty()))
         } label: {
             Label("New movement", systemImage: "plus")
