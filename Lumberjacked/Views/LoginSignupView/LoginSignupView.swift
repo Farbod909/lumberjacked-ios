@@ -9,12 +9,7 @@ import SwiftUI
 
 struct LoginSignupView: View {
     @State var viewModel: ViewModel
-    
-    @State var isShowingSignup = false
-    
-    @State var showErrorAlert = false
-    @State var errorAlertItem = ErrorAlertItem()
-    
+        
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -23,7 +18,7 @@ struct LoginSignupView: View {
                 Text("Lumberjacked")
                     .font(.custom("Marker Felt", size: 34))
                 Form {
-                    if isShowingSignup {
+                    if viewModel.isShowingSignup {
                         TextField("First name", text: $viewModel.firstName)
                             .autocorrectionDisabled()
                             .listRowBackground(Color.init(uiColor: .systemGray6))
@@ -38,7 +33,7 @@ struct LoginSignupView: View {
                         .listRowBackground(Color.init(uiColor: .systemGray6))
                     SecureField("Password", text: $viewModel.password)
                         .listRowBackground(Color.init(uiColor: .systemGray6))
-                    if isShowingSignup {
+                    if viewModel.isShowingSignup {
                         SecureField("Confirm password", text: $viewModel.passwordConfirmation)
                             .listRowBackground(Color.init(uiColor: .systemGray6))
                     }
@@ -46,54 +41,58 @@ struct LoginSignupView: View {
                 .scrollContentBackground(.hidden)
                 .scrollDisabled(true)
                 .interactiveDismissDisabled()
-                .animation(.default, value: isShowingSignup)
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        if !isShowingSignup {
-                            Button("Login") {
-                                Task {
-                                    do {
-                                        try await viewModel.login()
-                                        dismiss()
-                                    } catch let error as HttpError {
-                                        errorAlertItem = ErrorAlertItem(
-                                            title: error.error,
-                                            messages: error.messages)
-                                        showErrorAlert = true
-                                    }
+                .animation(.default, value: viewModel.isShowingSignup)
+            }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    if !viewModel.isShowingSignup {
+                        Button {
+                            Task {
+                                guard await viewModel.attemptLogin() else {
+                                    return
                                 }
+                                dismiss()
                             }
-                        } else {
-                            Button("Signup") {
-                                Task {
-                                    do {
-                                        try await viewModel.signup()
-                                        try await viewModel.login()
-                                        dismiss()
-                                    } catch let error as HttpError {
-                                        errorAlertItem = ErrorAlertItem(
-                                            title: error.error,
-                                            messages: error.messages)
-                                        showErrorAlert = true
-                                    }
-                                }
+                        } label: {
+                            if viewModel.isLoadingToolbarAction {
+                                ProgressView()
+                            } else {
+                                Text("Log in")
                             }
                         }
-                    }
-                    ToolbarItem(placement: .bottomBar) {
-                        if !isShowingSignup {
-                            Button("Signup") {
-                                isShowingSignup = true
+                    } else {
+                        Button {
+                            Task {
+                                guard await viewModel.attemptSignup() else {
+                                    return
+                                }
+                                guard await viewModel.attemptLogin() else {
+                                    return
+                                }
+                                dismiss()
                             }
-                        } else {
-                            Button("Cancel") {
-                                isShowingSignup = false
+                        } label: {
+                            if viewModel.isLoadingToolbarAction {
+                                ProgressView()
+                            } else {
+                                Text("Sign up")
                             }
                         }
                     }
                 }
+                ToolbarItem(placement: .bottomBar) {
+                    if !viewModel.isShowingSignup {
+                        Button("Signup") {
+                            viewModel.isShowingSignup = true
+                        }
+                    } else {
+                        Button("Cancel") {
+                            viewModel.isShowingSignup = false
+                        }
+                    }
+                }
             }
-            .alert(errorAlertItem, isPresented: $showErrorAlert)
+            .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
         }
     }
 }
