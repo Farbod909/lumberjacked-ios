@@ -62,7 +62,7 @@ extension HomeView {
             if isLoggedIn {
                 do {
                     movements = try await Networking()
-                        .request(options: Networking.RequestOptions(url: "/movements")) ?? [Movement]()
+                        .request(options: Networking.RequestOptions(url: "/movements"))
                 } catch let error as HttpError {
                     errorAlertItem = ErrorAlertItem(
                         title: error.error, messages: error.messages)

@@ -13,6 +13,10 @@ struct HttpError: Error {
     var messages: [String]
 }
 
+struct LocalNetworkingError: Error {
+    var message: String
+}
+
 struct ErrorResponseMultiMessage: Codable {
     var statusCode: Int
     var error: String
@@ -53,10 +57,9 @@ class Networking {
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
     }
     
-    func request<ResponseType: Decodable>(options: RequestOptions) async throws -> ResponseType? {
+    func request<ResponseType: Decodable>(options: RequestOptions) async throws -> ResponseType {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
-            print("Invalid URL")
-            return nil
+            throw LocalNetworkingError(message: "Invalid URL")
         }
         
         var request = URLRequest(url: url)
@@ -94,8 +97,7 @@ class Networking {
         do {
             if let requestBody = options.body {
                 guard let encoded = try? JSONEncoder().encode(requestBody) else {
-                    print("Failed to encode data")
-                    return nil
+                    throw LocalNetworkingError(message: "Failed to encode data")
                 }
                 
                 (data, response) = try await session.upload(for: request, from: encoded)
@@ -103,7 +105,7 @@ class Networking {
                 (data, response) = try await session.data(for: request)
             }
         } catch {
-            print("Failed to fetch data")
+            throw LocalNetworkingError(message: "Failed to fetch data")
         }
             
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
@@ -116,8 +118,7 @@ class Networking {
         }
                 
         guard let decodedResponse = try? decoder.decode(ResponseType.self, from: data) else {
-            print("Failed to decode data")
-            return nil
+            throw LocalNetworkingError(message: "Failed to decode data")
         }
         
         return decodedResponse
@@ -125,8 +126,7 @@ class Networking {
     
     func request(options: RequestOptions) async throws {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
-            print("Invalid URL")
-            return
+            throw LocalNetworkingError(message: "Invalid URL")
         }
         
         var request = URLRequest(url: url)
@@ -163,8 +163,7 @@ class Networking {
         do {
             if let requestBody = options.body {
                 guard let encoded = try? JSONEncoder().encode(requestBody) else {
-                    print("Failed to encode data")
-                    return
+                    throw LocalNetworkingError(message: "Failed to encode data")
                 }
 
                 (data, response) = try await session.upload(for: request, from: encoded)
@@ -172,7 +171,7 @@ class Networking {
                 (data, response) = try await session.data(for: request)
             }
         } catch {
-            print("Failed to fetch data")
+            throw LocalNetworkingError(message: "Failed to fetch data: \(error.localizedDescription)")
         }
         
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
@@ -183,8 +182,5 @@ class Networking {
                 throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: [errorResponse.message])
             }
         }
-
-        return
     }
-
 }
