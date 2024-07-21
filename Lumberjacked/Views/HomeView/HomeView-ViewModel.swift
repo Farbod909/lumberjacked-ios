@@ -13,6 +13,14 @@ extension HomeView {
         var container: ContainerView.ViewModel
         var movements = [Movement]()
         
+        var isShowingLoginSheet = false
+        var isLoggedIn = Keychain.standard.read(service: "accessToken", account: "lumberjacked") != nil
+        
+        var showErrorAlert = false
+        var errorAlertItem = ErrorAlertItem()
+        
+        var isLoadingMovements = true
+        
         init(container: ContainerView.ViewModel) {
             self.container = container
         }
@@ -54,11 +62,32 @@ extension HomeView {
             movements = try await Networking()
                 .request(options: Networking.RequestOptions(url: "/movements")) ?? [Movement]()
         }
+                
+        func attemptLogout() async {
+            do {
+                try await Networking().request(
+                    options: Networking.RequestOptions(url: "/auth/logout"))
+                Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
+                isShowingLoginSheet = true
+                isLoggedIn = false
+                movements = []
+                isLoadingMovements = true
+            } catch let error as HttpError {
+                errorAlertItem = ErrorAlertItem(
+                    title: error.error, messages: error.messages)
+                showErrorAlert = true
+            } catch {
+                errorAlertItem = ErrorAlertItem(
+                    title: "Unknown Error", messages: [error.localizedDescription])
+                showErrorAlert = true
+            }
+        }
         
-        func logout() async throws {
-            try await Networking().request(
-                options: Networking.RequestOptions(url: "/auth/logout"))
-            Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
+        func showLoginPageIfNotLoggedIn() {
+            if Keychain.standard.read(service: "accessToken", account: "lumberjacked") == nil {
+                isLoggedIn = false
+                isShowingLoginSheet = true
+            }
         }
     }
 }

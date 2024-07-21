@@ -9,30 +9,15 @@ import SwiftUI
 
 struct HomeView: View {
     @State var viewModel: ViewModel
-    
-    @State var isShowingLoginSheet = false
-    @State var isLoggedIn = Keychain.standard.read(service: "accessToken", account: "lumberjacked") != nil
-    
-    @State var showErrorAlert = false
-    @State var errorAlertItem = ErrorAlertItem()
-    
-    @State var isLoading = true
-    
+        
     var body: some View {
         ZStack {
-            if isLoading {
+            if viewModel.isLoadingMovements {
                 ProgressView()
             } else {
                 if viewModel.movements.isEmpty {
                     VStack {
-                        NavigationLink() {
-                            MovementInputView(
-                                viewModel: MovementInputView.ViewModel(
-                                    container: viewModel.container,
-                                    movement: Movement.empty()))
-                        } label: {
-                            Label("New movement", systemImage: "plus")
-                        }
+                        NewMovementLink(container: viewModel.container)
                     }
                 } else {
                     List {
@@ -44,11 +29,11 @@ struct HomeView: View {
                                         Spacer()
                                         if (!movement.movementLogs.isEmpty) {
                                             if let reps = movement.movementLogs[0].reps {
-                                                Text(reps.formatted()).frame(minWidth: 28)
+                                                Text(reps.formatted()).frame(minWidth: 36)
                                             }
                                             Divider()
                                             if let load = movement.movementLogs[0].load {
-                                                Text(load).frame(minWidth: 28)
+                                                Text(load).frame(minWidth: 36)
                                             }
                                         }
                                         NavigationLink(value: movement) { }
@@ -67,8 +52,8 @@ struct HomeView: View {
                                         Spacer()
                                         Text("Most recent")
                                         Text("Reps")
-                                        Text("|")
-                                        Text("Load").padding(.trailing, 14)
+                                        Text("+")
+                                        Text("Load").padding(.trailing, 22)
                                     }
                                     .fontWidth(.condensed)
                                 }
@@ -84,57 +69,51 @@ struct HomeView: View {
                 }
             }
         }
-        .task(id: isLoggedIn) {
-            if isLoggedIn {
-                isLoading = true
+        .task(id: viewModel.isLoggedIn) {
+            if viewModel.isLoggedIn {
                 try? await viewModel.loadAllMovements()
-                isLoading = false
+                viewModel.isLoadingMovements = false
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink() {
-                    MovementInputView(
-                        viewModel: MovementInputView.ViewModel(
-                            container: viewModel.container,
-                            movement: Movement.empty()))
-                } label: {
-                    Label("New movement", systemImage: "plus")
-                }
+                NewMovementLink(container: viewModel.container)
             }
             ToolbarItem(placement: .topBarLeading) {
                 Button {
                     Task {
-                        do {
-                            try await viewModel.logout()
-                            isLoggedIn = false
-                            isShowingLoginSheet = true
-                        } catch let error as HttpError {
-                            errorAlertItem = ErrorAlertItem(
-                                title: error.error, messages: error.messages)
-                            showErrorAlert = true
-                        }
+                        await viewModel.attemptLogout()
                     }
                 } label: {
-                    Text("Logout")
+                    Text("Log out")
                 }
             }
         }
         .sheet(
-            isPresented: $isShowingLoginSheet,
+            isPresented: $viewModel.isShowingLoginSheet,
             onDismiss: {
-                Task {
-                    isLoggedIn = true
-                }
+                viewModel.isLoggedIn = true
             }, content: {
                 LoginSignupView(viewModel: LoginSignupView.ViewModel())
             })
         .onAppear() {
-            if Keychain.standard.read(service: "accessToken", account: "lumberjacked") == nil {
-                isLoggedIn = false
-                isShowingLoginSheet = true
-            }
+            viewModel.showLoginPageIfNotLoggedIn()
         }
-        .alert(errorAlertItem, isPresented: $showErrorAlert)
+        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
+    }
+}
+
+struct NewMovementLink: View {
+    var container: ContainerView.ViewModel
+    
+    var body: some View {
+        NavigationLink() {
+            MovementInputView(
+                viewModel: MovementInputView.ViewModel(
+                    container: container,
+                    movement: Movement.empty()))
+        } label: {
+            Label("New movement", systemImage: "plus")
+        }
     }
 }
