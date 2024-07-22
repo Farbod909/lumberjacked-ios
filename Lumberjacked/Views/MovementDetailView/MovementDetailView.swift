@@ -76,7 +76,7 @@ struct MovementDetailView: View {
                     movementLog: selection.log,
                     movement: selection.movement))
         }
-        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
+//        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
         .alert("Delete", isPresented: $viewModel.showDeleteConfirmationAlert) {
             Button("Delete", role: .destructive) {
                 Task {

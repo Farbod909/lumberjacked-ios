@@ -15,10 +15,6 @@ extension HomeView {
         
         var isShowingLoginSheet = false
         var isLoggedIn = Keychain.standard.read(service: "accessToken", account: "lumberjacked") != nil
-        
-        var showErrorAlert = false
-        var errorAlertItem = ErrorAlertItem()
-        
         var isLoadingMovements = true
         
         init(container: ContainerView.ViewModel) {
@@ -61,40 +57,23 @@ extension HomeView {
         func attemptLoadAllMovements() async {
             if isLoggedIn {
                 isLoadingMovements = true
-                do {
-                    movements =
-                        try await Networking.shared.request(
-                            options: Networking.RequestOptions(url: "/movements"))
-                    isLoadingMovements = false
-                } catch let error as RemoteNetworkingError {
-                    errorAlertItem = ErrorAlertItem(
-                        title: error.error, messages: error.messages)
-                    showErrorAlert = true
-                } catch {
-                    errorAlertItem = ErrorAlertItem(
-                        title: "Unknown Error", messages: [error.localizedDescription])
-                    showErrorAlert = true
+                if let response = await container.attemptRequest(
+                    options: Networking.RequestOptions(
+                        url: "/movements"), outputType: [Movement].self) {
+                    movements = response
                 }
                 isLoadingMovements = false
             }
         }
                 
         func attemptLogout() async {
-            do {
-                try await Networking.shared.request(
-                    options: Networking.RequestOptions(url: "/auth/logout"))
+            if await container.attemptRequest(
+                options: Networking.RequestOptions(
+                    url: "/auth/logout")) {
                 Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
                 isShowingLoginSheet = true
                 isLoggedIn = false
                 movements = []
-            } catch let error as RemoteNetworkingError {
-                errorAlertItem = ErrorAlertItem(
-                    title: error.error, messages: error.messages)
-                showErrorAlert = true
-            } catch {
-                errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error", messages: [error.localizedDescription])
-                showErrorAlert = true
             }
         }
         

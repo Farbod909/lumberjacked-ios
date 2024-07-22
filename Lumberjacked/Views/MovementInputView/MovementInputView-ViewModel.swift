@@ -12,10 +12,7 @@ extension MovementInputView {
     class ViewModel {
         var container: ContainerView.ViewModel
         var movement: Movement
-        
-        var showErrorAlert = false
-        var errorAlertItem = ErrorAlertItem()
-        
+                
         var saveActionLoading = false
         
         init(container: ContainerView.ViewModel, movement: Movement) {
@@ -25,58 +22,30 @@ extension MovementInputView {
         
         func attemptSaveNewMovement() async -> Bool {
             saveActionLoading = true
-            do {
-                try await Networking.shared
-                    .request(
-                        options: Networking.RequestOptions(url: "/movements",
-                                                           body: movement.dto,
-                                                           method: .POST,
-                                                           headers: [
-                                                            ("application/json", "Content-Type")
-                                                           ]))
-                saveActionLoading = false
-                return true
-            } catch let error as RemoteNetworkingError {
-                errorAlertItem = ErrorAlertItem(
-                    title: error.error,
-                    messages: error.messages)
-                showErrorAlert = true
-            } catch {
-                errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error",
-                    messages: [error.localizedDescription])
-                showErrorAlert = true
-            }
+            let didSucceed = await container.attemptRequest(
+                options: Networking.RequestOptions(
+                    url: "/movements",
+                    body: movement.dto,
+                    method: .POST,
+                    headers: [
+                        ("application/json", "Content-Type")
+                    ]))
             saveActionLoading = false
-            return false
+            return didSucceed
         }
         
         func attemptUpdateMovement() async -> Bool {
             saveActionLoading = true
-            do {
-                try await Networking.shared
-                    .request(
-                        options: Networking.RequestOptions(url: "/movements/\(movement.id)",
-                                                           body: movement.dto,
-                                                           method: .PATCH,
-                                                           headers: [
-                                                            ("application/json", "Content-Type")
-                                                           ]))
-                saveActionLoading = false
-                return true
-            } catch let error as RemoteNetworkingError {
-                errorAlertItem = ErrorAlertItem(
-                    title: error.error,
-                    messages: error.messages)
-                showErrorAlert = true
-            } catch {
-                errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error",
-                    messages: [error.localizedDescription])
-                showErrorAlert = true
-            }
+            let didSucceed = await container.attemptRequest(
+                options: Networking.RequestOptions(
+                    url: "/movements/\(movement.id)",
+                    body: movement.dto,
+                    method: .PATCH,
+                    headers: [
+                        ("application/json", "Content-Type")
+                    ]))
             saveActionLoading = false
-            return false
+            return didSucceed
         }
     }
 }

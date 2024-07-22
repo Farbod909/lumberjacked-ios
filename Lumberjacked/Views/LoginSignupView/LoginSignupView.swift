@@ -92,11 +92,6 @@ struct LoginSignupView: View {
                     }
                 }
             }
-            .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
         }
     }
-}
-
-#Preview {
-    LoginSignupView(viewModel: LoginSignupView.ViewModel())
 }

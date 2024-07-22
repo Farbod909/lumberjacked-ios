@@ -12,10 +12,7 @@ extension MovementDetailView {
     class ViewModel {
         var container: ContainerView.ViewModel
         var movement: Movement
-        
-        var showErrorAlert = false
-        var errorAlertItem = ErrorAlertItem()
-        
+                
         var deleteActionLoading = false
         var showDeleteConfirmationAlert = false
                 
@@ -25,46 +22,19 @@ extension MovementDetailView {
         }
         
         func attemptLoadMovementDetail(id: Int) async {
-            do {
-                movement = try await Networking.shared
-                    .request(
-                        options: Networking.RequestOptions(url: "/movements/\(id)"))
-                deleteActionLoading = false
-            } catch let error as RemoteNetworkingError {
-                errorAlertItem = ErrorAlertItem(
-                    title: error.error,
-                    messages: error.messages)
-                showErrorAlert = true
-            } catch {
-                errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error",
-                    messages: [error.localizedDescription])
-                showErrorAlert = true
+            if let response = await container.attemptRequest(
+                options: Networking.RequestOptions(url: "/movements/\(id)"), outputType: Movement.self) {
+                movement = response
             }
         }
         
         func attemptDeleteMovement(id: Int) async -> Bool {
             deleteActionLoading = true
-            do {
-                try await Networking.shared
-                    .request(
-                        options: Networking.RequestOptions(
-                            url: "/movements/\(id)", method: .DELETE))
-                deleteActionLoading = false
-                return true
-            } catch let error as RemoteNetworkingError {
-                errorAlertItem = ErrorAlertItem(
-                    title: error.error,
-                    messages: error.messages)
-                showErrorAlert = true
-            } catch {
-                errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error",
-                    messages: [error.localizedDescription])
-                showErrorAlert = true
-            }
+            let didSucceed = await container.attemptRequest(
+                options: Networking.RequestOptions(
+                    url: "/movements/\(id)", method: .DELETE))
             deleteActionLoading = false
-            return false
+            return didSucceed
         }
     }
 }

@@ -56,6 +56,5 @@ struct LogInputView: View {
             }
         }
         .navigationTitle(viewModel.movementLog.timestamp?.formatted(date: .abbreviated, time:.omitted) ?? "New Log")
-        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
     }
 }

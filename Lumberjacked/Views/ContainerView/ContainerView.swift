@@ -14,5 +14,6 @@ struct ContainerView: View {
         NavigationStack(path: $viewModel.path) {
             HomeView(viewModel: viewModel.homeViewModel)
         }
+        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
     }
 }

@@ -9,7 +9,9 @@ import SwiftUI
 
 extension LoginSignupView {
     @Observable
-    class ViewModel {
+    class ViewModel {        
+        var container: ContainerView.ViewModel
+
         var firstName = ""
         var lastName = ""
         var email = ""
@@ -18,79 +20,51 @@ extension LoginSignupView {
         
         var isShowingSignup = false
         var isLoadingToolbarAction = false
-        
-        var showErrorAlert = false
-        var errorAlertItem = ErrorAlertItem()
+                
+        init(container: ContainerView.ViewModel) {
+            self.container = container
+        }
         
         func attemptLogin() async -> Bool {
+            let loginRequest = LoginRequest(email: email, password: password)
+            
             isLoadingToolbarAction = true
-            do {
-                let loginRequest = LoginRequest(email: email, password: password)
-                let loginResponse: LoginResponse? = try await Networking.shared
-                    .request(
-                        options: Networking.RequestOptions(url: "/auth/login/password",
-                                                           body: loginRequest,
-                                                           method: .POST,
-                                                           headers: [
-                                                            ("application/json", "Content-Type")
-                                                           ]))
-                if let accessToken = loginResponse?.accessToken {
-                    Keychain.standard.save(accessToken, service: "accessToken", account: "lumberjacked")
-                    isLoadingToolbarAction = false
-                    return true
-                } else {
-                    errorAlertItem = ErrorAlertItem(
-                        title: "Unknown Error",
-                        messages: ["Unexpected response from server."])
-                    showErrorAlert = true
-                }
-            } catch let error as RemoteNetworkingError {
-                errorAlertItem = ErrorAlertItem(
-                    title: error.error,
-                    messages: error.messages)
-                showErrorAlert = true
-            } catch {
-                errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error",
-                    messages: [error.localizedDescription])
-                showErrorAlert = true
+            if let response = await container.attemptRequest(
+                options: Networking.RequestOptions(
+                    url: "/auth/login/password",
+                    body: loginRequest,
+                    method: .POST,
+                    headers: [
+                        ("application/json", "Content-Type")
+                    ]),
+                outputType: LoginResponse.self) {
+                Keychain.standard.save(response.accessToken, service: "accessToken", account: "lumberjacked")
+                isLoadingToolbarAction = false
+                return true
             }
             isLoadingToolbarAction = false
             return false
         }
         
         func attemptSignup() async -> Bool {
+            let signupRequest = SignupRequest(
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password,
+                passwordConfirmation: passwordConfirmation)
+
             isLoadingToolbarAction = true
-            do {
-                let signupRequest = SignupRequest(
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    password: password,
-                    passwordConfirmation: passwordConfirmation)
-                try await Networking.shared
-                    .request(
-                        options: Networking.RequestOptions(url: "/users",
-                                                           body: signupRequest,
-                                                           method: .POST,
-                                                           headers: [
-                                                            ("application/json", "Content-Type")
-                                                           ]))
-                isLoadingToolbarAction = false
-                return true
-            } catch let error as RemoteNetworkingError {
-                errorAlertItem = ErrorAlertItem(
-                    title: error.error,
-                    messages: error.messages)
-                showErrorAlert = true
-            } catch {
-                errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error",
-                    messages: [error.localizedDescription])
-                showErrorAlert = true
-            }
+            let didSucceed = await container.attemptRequest(
+                options: Networking.RequestOptions(
+                    url: "/users",
+                    body: signupRequest,
+                    method: .POST,
+                    headers: [
+                        ("application/json", "Content-Type")
+                    ]))
             isLoadingToolbarAction = false
-            return false
+            return didSucceed
         }
     }
 }

@@ -76,7 +76,6 @@ struct MovementInputView: View {
         .onDisappear() {
             viewModel.movement = Movement.empty()
         }
-        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
     }
 }
 

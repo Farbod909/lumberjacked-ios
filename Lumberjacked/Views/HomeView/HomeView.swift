@@ -47,7 +47,7 @@ struct HomeView: View {
                 viewModel.isLoggedIn = true
                 viewModel.isLoadingMovements = true
             }, content: {
-                LoginSignupView(viewModel: LoginSignupView.ViewModel())
+                LoginSignupView(viewModel: LoginSignupView.ViewModel(container: viewModel.container))
             })
         .onAppear() {
             viewModel.showLoginPageIfNotLoggedIn()
@@ -58,7 +58,6 @@ struct HomeView: View {
                     container: viewModel.container,
                     movement: selection))
         }
-        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
     }
 }
 
