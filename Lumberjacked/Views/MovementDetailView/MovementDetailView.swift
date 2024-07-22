@@ -13,6 +13,9 @@ struct MovementDetailView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+            Text(viewModel.movement.name)
+                .font(.title)
+                .fontWeight(.bold)
             HStack {
                 Text("split")
                     .textCase(.uppercase)
@@ -29,7 +32,7 @@ struct MovementDetailView: View {
                 RecommendationsView(movement: viewModel.movement)
             }
             
-            if (!viewModel.movement.movementLogs.isEmpty) {
+            if !viewModel.movement.movementLogs.isEmpty {
                 LogListView(movement: viewModel.movement)
             } else {
                 Spacer()
@@ -37,7 +40,6 @@ struct MovementDetailView: View {
                     .frame(maxWidth: .infinity)
                 Spacer()
             }
-            
             Spacer()
         }
         .task {
@@ -64,8 +66,6 @@ struct MovementDetailView: View {
                 NewMovementLogLink(movement: viewModel.movement)
             }
         }
-        .navigationTitle(viewModel.movement.name)
-        .navigationBarTitleDisplayMode(.large)
         .navigationDestination(for: MovementAndLog.self) { selection in
             LogInputView(
                 viewModel: LogInputView.ViewModel(

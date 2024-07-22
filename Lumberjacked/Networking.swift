@@ -111,7 +111,7 @@ class Networking {
             throw LocalNetworkingError(message: "Failed to fetch data: \(error.localizedDescription)")
         }
             
-        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode > 299 {
             print("HTTP error: \(httpResponse)")
             if let errorResponse = try? decoder.decode(ErrorResponseMultiMessage.self, from: data) {
                 throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: errorResponse.message)
@@ -183,7 +183,7 @@ class Networking {
             throw LocalNetworkingError(message: "Failed to fetch data: \(error.localizedDescription)")
         }
         
-        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode > 299 {
             print("HTTP error: \(httpResponse)")
             if let errorResponse = try? decoder.decode(ErrorResponseMultiMessage.self, from: data) {
                 throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: errorResponse.message)
