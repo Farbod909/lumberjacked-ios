@@ -14,6 +14,10 @@ struct MovementLog: Codable, Equatable, Hashable, Identifiable {
     var load: String?
     var timestamp: Date?
     
+    var isFullyPopulated: Bool {
+        return sets != nil && reps != nil && load != nil && load != ""
+    }
+    
     struct MovementLogDTO: Codable {
         var sets: Int?
         var reps: Int?

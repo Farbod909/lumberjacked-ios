@@ -9,10 +9,8 @@ import SwiftUI
 
 struct LogInputView: View {
     @State var viewModel: ViewModel
-    
-    @State var showErrorAlert = false
-    @State var errorAlertItem = ErrorAlertItem()
-    
+    @Environment(\.dismiss) var dismiss
+        
     var body: some View {
         Form {
             Section {
@@ -20,47 +18,44 @@ struct LogInputView: View {
                 TextField("Reps", value: $viewModel.movementLog.reps, format: .number)
                 TextField("Load", text: $viewModel.movementLog.load.bound)
             }
-            Button {
-                Task {
-                    viewModel.saveImage = "ellipsis"
-                    do {
-                        if viewModel.movementLog.id == nil {
-                            try await viewModel.saveNewLog()
-                        } else {
-                            try await viewModel.updateLog()
-                        }
-                    } catch let error as HttpError {
-                        errorAlertItem = ErrorAlertItem(
-                            title: error.error, messages: error.messages)
-                        showErrorAlert = true
-                    }
-                    viewModel.saveImage = ""
-                    viewModel.container.path.removeLast()
-                }
-            } label: {
-                HStack {
-                    Text("Save")
-                    Image(systemName: viewModel.saveImage)
-                }
-            }
         }
         .toolbar {
-            if viewModel.movementLog.id != nil {
-                Button("Delete", systemImage: "trash") {
+            if viewModel.toolbarActionLoading {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ProgressView()
+                }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save") {
                     Task {
-                        do {
-                            try await viewModel.deleteLog()
-                            viewModel.container.path.removeLast()
-                        } catch let error as HttpError {
-                            errorAlertItem = ErrorAlertItem(
-                                title: error.error, messages: error.messages)
-                            showErrorAlert = true
+                        if viewModel.movementLog.id == nil {
+                            guard await viewModel.attemptSaveNewLog() else {
+                                return
+                            }
+                        } else {
+                            guard await viewModel.attemptUpdateLog() else {
+                                return
+                            }
+                        }
+                        dismiss()
+                    }
+                }
+                .disabled(!viewModel.movementLog.isFullyPopulated)
+            }
+            if viewModel.movementLog.id != nil {
+                ToolbarItem(placement: .secondaryAction) {
+                    Button("Delete log", systemImage: "trash") {
+                        Task {
+                            guard await viewModel.attemptDeleteLog() else {
+                                return
+                            }
+                            dismiss()
                         }
                     }
                 }
             }
         }
         .navigationTitle(viewModel.movementLog.timestamp?.formatted(date: .abbreviated, time:.omitted) ?? "New Log")
-        .alert(errorAlertItem, isPresented: $showErrorAlert)
+        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
     }
 }
