@@ -59,6 +59,7 @@ class Networking {
     
     func request<ResponseType: Decodable>(options: RequestOptions) async throws -> ResponseType {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
+            print("Invalid URL")
             throw LocalNetworkingError(message: "Invalid URL")
         }
         
@@ -97,6 +98,7 @@ class Networking {
         do {
             if let requestBody = options.body {
                 guard let encoded = try? JSONEncoder().encode(requestBody) else {
+                    print("Failed to encode data")
                     throw LocalNetworkingError(message: "Failed to encode data")
                 }
                 
@@ -105,19 +107,23 @@ class Networking {
                 (data, response) = try await session.data(for: request)
             }
         } catch {
-            throw LocalNetworkingError(message: "Failed to fetch data")
+            print("Failed to fetch data: \(error.localizedDescription)")
+            throw LocalNetworkingError(message: "Failed to fetch data: \(error.localizedDescription)")
         }
             
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            print("HTTP error: \(httpResponse)")
             if let errorResponse = try? decoder.decode(ErrorResponseMultiMessage.self, from: data) {
                 throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: errorResponse.message)
-            }
-            if let errorResponse = try? decoder.decode(ErrorResponseSingleMessage.self, from: data) {
+            } else if let errorResponse = try? decoder.decode(ErrorResponseSingleMessage.self, from: data) {
                 throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: [errorResponse.message])
+            } else {
+                throw HttpError(statusCode: httpResponse.statusCode, error: "Server error", messages: [])
             }
         }
                 
         guard let decodedResponse = try? decoder.decode(ResponseType.self, from: data) else {
+            print("Failed to decode data")
             throw LocalNetworkingError(message: "Failed to decode data")
         }
         
@@ -126,6 +132,7 @@ class Networking {
     
     func request(options: RequestOptions) async throws {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
+            print("Invalid URL")
             throw LocalNetworkingError(message: "Invalid URL")
         }
         
@@ -163,6 +170,7 @@ class Networking {
         do {
             if let requestBody = options.body {
                 guard let encoded = try? JSONEncoder().encode(requestBody) else {
+                    print("Failed to encode data")
                     throw LocalNetworkingError(message: "Failed to encode data")
                 }
 
@@ -171,15 +179,18 @@ class Networking {
                 (data, response) = try await session.data(for: request)
             }
         } catch {
+            print("Failed to fetch data: \(error.localizedDescription)")
             throw LocalNetworkingError(message: "Failed to fetch data: \(error.localizedDescription)")
         }
         
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            print("HTTP error: \(httpResponse)")
             if let errorResponse = try? decoder.decode(ErrorResponseMultiMessage.self, from: data) {
                 throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: errorResponse.message)
-            }
-            if let errorResponse = try? decoder.decode(ErrorResponseSingleMessage.self, from: data) {
+            } else if let errorResponse = try? decoder.decode(ErrorResponseSingleMessage.self, from: data) {
                 throw HttpError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: [errorResponse.message])
+            } else {
+                throw HttpError(statusCode: httpResponse.statusCode, error: "Server error", messages: [])
             }
         }
     }

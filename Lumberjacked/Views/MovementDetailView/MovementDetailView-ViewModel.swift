@@ -13,17 +13,57 @@ extension MovementDetailView {
         var container: ContainerView.ViewModel
         var movement: Movement
         
+        var showErrorAlert = false
+        var errorAlertItem = ErrorAlertItem()
+        
+        var deleteActionLoading = false
+        var showDeleteConfirmationAlert = false
+                
         init(container: ContainerView.ViewModel, movement: Movement) {
             self.container = container
             self.movement = movement
         }
         
-        func loadMovementDetail(id: Int) async throws {
-            movement = try await Networking()
-                .request(
-                    options: Networking.RequestOptions(url: "/movements/\(id)"))
-            ?? Movement.empty()
+        func attemptLoadMovementDetail(id: Int) async {
+            do {
+                movement = try await Networking()
+                    .request(
+                        options: Networking.RequestOptions(url: "/movements/\(id)"))
+            } catch let error as HttpError {
+                errorAlertItem = ErrorAlertItem(
+                    title: error.error,
+                    messages: error.messages)
+                showErrorAlert = true
+            } catch {
+                errorAlertItem = ErrorAlertItem(
+                    title: "Unknown Error",
+                    messages: [error.localizedDescription])
+                showErrorAlert = true
+            }
         }
-
+        
+        func attemptDeleteMovement(id: Int) async -> Bool {
+            deleteActionLoading = true
+            do {
+                try await Networking()
+                    .request(
+                        options: Networking.RequestOptions(
+                            url: "/movements/\(id)", method: .DELETE))
+                deleteActionLoading = false
+                return true
+            } catch let error as HttpError {
+                errorAlertItem = ErrorAlertItem(
+                    title: error.error,
+                    messages: error.messages)
+                showErrorAlert = true
+            } catch {
+                errorAlertItem = ErrorAlertItem(
+                    title: "Unknown Error",
+                    messages: [error.localizedDescription])
+                showErrorAlert = true
+            }
+            deleteActionLoading = false
+            return false
+        }
     }
 }

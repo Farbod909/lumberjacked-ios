@@ -100,6 +100,8 @@ extension HomeView {
             if Keychain.standard.read(service: "accessToken", account: "lumberjacked") == nil {
                 isLoggedIn = false
                 isShowingLoginSheet = true
+            } else {
+                print(Keychain.standard.read(service: "accessToken", account: "lumberjacked", type: String.self)!)
             }
         }
     }

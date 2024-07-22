@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MovementDetailView: View {
     @State var viewModel: ViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -29,49 +30,30 @@ struct MovementDetailView: View {
             }
             
             if (!viewModel.movement.movementLogs.isEmpty) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text("Logs")
-                            .textCase(.uppercase)
-                            .font(.headline)
-                        Spacer()
-                        Text("Sets")
-                            .textCase(.uppercase)
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .frame(width: 40)
-                        Text("Reps")
-                            .textCase(.uppercase)
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .frame(width: 40)
-                        Text("Load")
-                            .textCase(.uppercase)
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .frame(width: 60)
-                            .padding(.trailing, 8)
-                    }
-                    ScrollView {
-                        LazyVStack {
-                            ForEach(
-                                viewModel.movement.movementLogs.sorted(
-                                    by: { $0.timestamp! > $1.timestamp! }),
-                                id: \.self) { log in
-                                    LogItem(movement: viewModel.movement, log: log)
-                            }
-                        }
-                    }
-                }
+                LogListView(movement: viewModel.movement)
+            } else {
+                Spacer()
+                NewMovementLogLink(movement: viewModel.movement)
+                    .frame(maxWidth: .infinity)
+                Spacer()
             }
             
             Spacer()
         }
         .task {
-            try? await viewModel.loadMovementDetail(id: viewModel.movement.id)
+            await viewModel.attemptLoadMovementDetail(id: viewModel.movement.id)
         }
         .toolbar {
             HStack {
+                Button {
+                    viewModel.showDeleteConfirmationAlert = true
+                } label: {
+                    if viewModel.deleteActionLoading {
+                        ProgressView()
+                    } else {
+                        Label("Delete movement", systemImage: "trash")
+                    }
+                }
                 NavigationLink() {
                     MovementInputView(
                         viewModel: MovementInputView.ViewModel(
@@ -79,18 +61,29 @@ struct MovementDetailView: View {
                 } label: {
                     Label("Edit movement", systemImage: "pencil.circle")
                 }
-                Button("New log", systemImage: "plus.square.fill") {
-                    viewModel.container.path.append(MovementAndLog(movement: viewModel.movement, log: MovementLog()))
-                }
+                NewMovementLogLink(movement: viewModel.movement)
             }
         }
         .navigationTitle(viewModel.movement.name)
+        .navigationBarTitleDisplayMode(.large)
         .navigationDestination(for: MovementAndLog.self) { selection in
             LogInputView(
                 viewModel: LogInputView.ViewModel(
                     container: viewModel.container,
                     movementLog: selection.log,
                     movement: selection.movement))
+        }
+        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
+        .alert("Delete", isPresented: $viewModel.showDeleteConfirmationAlert) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    guard await viewModel.attemptDeleteMovement(id: viewModel.movement.id) else {
+                        return
+                    }
+                    dismiss()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
         }
         .padding(.horizontal, 16)
     }
@@ -157,6 +150,48 @@ struct RecommendationsView: View {
     }
 }
 
+struct LogListView: View {
+    var movement: Movement
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text("Logs")
+                    .textCase(.uppercase)
+                    .font(.headline)
+                Spacer()
+                Text("Sets")
+                    .textCase(.uppercase)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .frame(width: 40)
+                Text("Reps")
+                    .textCase(.uppercase)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .frame(width: 40)
+                Text("Load")
+                    .textCase(.uppercase)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .frame(width: 60)
+                    .padding(.trailing, 8)
+            }
+            ScrollView {
+                LazyVStack {
+                    ForEach(
+                        movement.movementLogs.sorted(
+                            by: { $0.timestamp! > $1.timestamp! }),
+                        id: \.self) { log in
+                            LogItem(movement: movement, log: log)
+                    }
+                }
+            }
+        }
+
+    }
+}
+
 struct LogItem: View {
     let movement: Movement
     let log: MovementLog
@@ -189,5 +224,22 @@ struct LogItem: View {
             .cornerRadius(5)
             .padding(.bottom, 2)
         }
+    }
+}
+
+struct NewMovementLogLink: View {
+    var movement: Movement
+    
+    var body: some View {
+        NavigationLink(value: MovementAndLog(movement: movement, log: MovementLog())) {
+            Label("New log", systemImage: "plus.square.fill")
+        }
+
+    }
+}
+
+#Preview {
+    NavigationStack {
+        MovementDetailView(viewModel: MovementDetailView.ViewModel(container: ContainerView.ViewModel(), movement: Movement(id: 1, name: "Name", split: "Split", movementLogs: [])))
     }
 }
