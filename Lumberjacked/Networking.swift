@@ -18,6 +18,7 @@ struct LocalNetworkingError: Error {
 }
 
 class Networking {
+    static let shared = Networking()
         
     struct RequestOptions {
         enum HTTPMethod {

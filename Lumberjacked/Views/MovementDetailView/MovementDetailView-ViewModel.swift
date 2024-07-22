@@ -26,7 +26,7 @@ extension MovementDetailView {
         
         func attemptLoadMovementDetail(id: Int) async {
             do {
-                movement = try await Networking()
+                movement = try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/movements/\(id)"))
                 deleteActionLoading = false
@@ -46,7 +46,7 @@ extension MovementDetailView {
         func attemptDeleteMovement(id: Int) async -> Bool {
             deleteActionLoading = true
             do {
-                try await Networking()
+                try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(
                             url: "/movements/\(id)", method: .DELETE))

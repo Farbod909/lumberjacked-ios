@@ -62,8 +62,9 @@ extension HomeView {
             if isLoggedIn {
                 isLoadingMovements = true
                 do {
-                    movements = try await Networking()
-                        .request(options: Networking.RequestOptions(url: "/movements"))
+                    movements =
+                        try await Networking.shared.request(
+                            options: Networking.RequestOptions(url: "/movements"))
                     isLoadingMovements = false
                 } catch let error as RemoteNetworkingError {
                     errorAlertItem = ErrorAlertItem(
@@ -80,7 +81,7 @@ extension HomeView {
                 
         func attemptLogout() async {
             do {
-                try await Networking().request(
+                try await Networking.shared.request(
                     options: Networking.RequestOptions(url: "/auth/logout"))
                 Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
                 isShowingLoginSheet = true

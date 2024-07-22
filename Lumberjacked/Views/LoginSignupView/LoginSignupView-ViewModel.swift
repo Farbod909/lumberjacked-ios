@@ -26,7 +26,7 @@ extension LoginSignupView {
             isLoadingToolbarAction = true
             do {
                 let loginRequest = LoginRequest(email: email, password: password)
-                let loginResponse: LoginResponse? = try await Networking()
+                let loginResponse: LoginResponse? = try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/auth/login/password",
                                                            body: loginRequest,
@@ -68,7 +68,7 @@ extension LoginSignupView {
                     email: email,
                     password: password,
                     passwordConfirmation: passwordConfirmation)
-                try await Networking()
+                try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/users",
                                                            body: signupRequest,

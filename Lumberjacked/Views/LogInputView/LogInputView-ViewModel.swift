@@ -35,7 +35,7 @@ extension LogInputView {
                 return false
             }
             do {
-                try await Networking()
+                try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/movement-logs/\(movementLogId)",
                                                            body: movementLog.dto,
@@ -63,7 +63,7 @@ extension LogInputView {
         func attemptSaveNewLog() async -> Bool {
             toolbarActionLoading = true
             do {
-                try await Networking()
+                try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/movements/\(movement.id)/logs",
                                                            body: movementLog.dto,
@@ -97,7 +97,7 @@ extension LogInputView {
             }
             
             do {
-                try await Networking()
+                try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/movement-logs/\(movementLogId)",
                                                            method: .DELETE))

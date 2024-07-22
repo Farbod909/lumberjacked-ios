@@ -26,7 +26,7 @@ extension MovementInputView {
         func attemptSaveNewMovement() async -> Bool {
             saveActionLoading = true
             do {
-                try await Networking()
+                try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/movements",
                                                            body: movement.dto,
@@ -54,7 +54,7 @@ extension MovementInputView {
         func attemptUpdateMovement() async -> Bool {
             saveActionLoading = true
             do {
-                try await Networking()
+                try await Networking.shared
                     .request(
                         options: Networking.RequestOptions(url: "/movements/\(movement.id)",
                                                            body: movement.dto,
