@@ -65,7 +65,7 @@ extension HomeView {
                     movements = try await Networking()
                         .request(options: Networking.RequestOptions(url: "/movements"))
                     isLoadingMovements = false
-                } catch let error as HttpError {
+                } catch let error as RemoteNetworkingError {
                     errorAlertItem = ErrorAlertItem(
                         title: error.error, messages: error.messages)
                     showErrorAlert = true
@@ -86,7 +86,7 @@ extension HomeView {
                 isShowingLoginSheet = true
                 isLoggedIn = false
                 movements = []
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error, messages: error.messages)
                 showErrorAlert = true

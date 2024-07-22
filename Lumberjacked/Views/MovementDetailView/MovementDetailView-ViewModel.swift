@@ -30,7 +30,7 @@ extension MovementDetailView {
                     .request(
                         options: Networking.RequestOptions(url: "/movements/\(id)"))
                 deleteActionLoading = false
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
                     messages: error.messages)
@@ -52,7 +52,7 @@ extension MovementDetailView {
                             url: "/movements/\(id)", method: .DELETE))
                 deleteActionLoading = false
                 return true
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
                     messages: error.messages)

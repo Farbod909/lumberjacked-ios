@@ -44,7 +44,7 @@ extension LoginSignupView {
                         messages: ["Unexpected response from server."])
                     showErrorAlert = true
                 }
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
                     messages: error.messages)
@@ -78,7 +78,7 @@ extension LoginSignupView {
                                                            ]))
                 isLoadingToolbarAction = false
                 return true
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
                     messages: error.messages)

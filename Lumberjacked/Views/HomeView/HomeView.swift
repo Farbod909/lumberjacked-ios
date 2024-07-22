@@ -13,7 +13,9 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             if viewModel.isLoadingMovements {
-                ProgressView()
+                if viewModel.movements.isEmpty {
+                    ProgressView()
+                }
             } else {
                 if viewModel.movements.isEmpty {
                     NewMovementLink(viewModel: viewModel)
@@ -43,6 +45,7 @@ struct HomeView: View {
             isPresented: $viewModel.isShowingLoginSheet,
             onDismiss: {
                 viewModel.isLoggedIn = true
+                viewModel.isLoadingMovements = true
             }, content: {
                 LoginSignupView(viewModel: LoginSignupView.ViewModel())
             })

@@ -45,7 +45,7 @@ extension LogInputView {
                                                            ]))
                 toolbarActionLoading = false
                 return true
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
                     messages: error.messages)
@@ -73,7 +73,7 @@ extension LogInputView {
                                                            ]))
                 toolbarActionLoading = false
                 return true
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
                     messages: error.messages)
@@ -103,7 +103,7 @@ extension LogInputView {
                                                            method: .DELETE))
                 toolbarActionLoading = false
                 return true
-            } catch let error as HttpError {
+            } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
                     messages: error.messages)
