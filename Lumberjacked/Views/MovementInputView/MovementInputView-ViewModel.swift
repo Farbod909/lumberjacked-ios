@@ -34,6 +34,7 @@ extension MovementInputView {
                                                            headers: [
                                                             ("application/json", "Content-Type")
                                                            ]))
+                saveActionLoading = false
                 return true
             } catch let error as HttpError {
                 errorAlertItem = ErrorAlertItem(
@@ -61,6 +62,7 @@ extension MovementInputView {
                                                            headers: [
                                                             ("application/json", "Content-Type")
                                                            ]))
+                saveActionLoading = false
                 return true
             } catch let error as HttpError {
                 errorAlertItem = ErrorAlertItem(

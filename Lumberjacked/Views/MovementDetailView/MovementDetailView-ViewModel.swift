@@ -29,6 +29,7 @@ extension MovementDetailView {
                 movement = try await Networking()
                     .request(
                         options: Networking.RequestOptions(url: "/movements/\(id)"))
+                deleteActionLoading = false
             } catch let error as HttpError {
                 errorAlertItem = ErrorAlertItem(
                     title: error.error,
