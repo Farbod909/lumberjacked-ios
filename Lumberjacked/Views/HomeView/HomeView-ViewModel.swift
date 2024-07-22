@@ -16,6 +16,7 @@ extension HomeView {
         var isShowingLoginSheet = false
         var isLoggedIn = Keychain.standard.read(service: "accessToken", account: "lumberjacked") != nil
         var isLoadingMovements = true
+        var isLoadingLogout = false
         
         init(container: ContainerView.ViewModel) {
             self.container = container
@@ -67,14 +68,14 @@ extension HomeView {
         }
                 
         func attemptLogout() async {
-            if await container.attemptRequest(
-                options: Networking.RequestOptions(
-                    url: "/auth/logout")) {
+            isLoadingLogout = true
+            if await container.attemptRequest(options: Networking.RequestOptions(url: "/auth/logout")) {
                 Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
                 isShowingLoginSheet = true
                 isLoggedIn = false
                 movements = []
             }
+            isLoadingLogout = false
         }
         
         func showLoginPageIfNotLoggedIn() {

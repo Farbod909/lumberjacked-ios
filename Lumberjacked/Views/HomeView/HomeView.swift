@@ -32,12 +32,16 @@ struct HomeView: View {
                 NewMovementLink(viewModel: viewModel)
             }
             ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    Task {
-                        await viewModel.attemptLogout()
+                if (!viewModel.isLoadingLogout) {
+                    Button {
+                        Task {
+                            await viewModel.attemptLogout()
+                        }
+                    } label: {
+                        Text("Log out")
                     }
-                } label: {
-                    Text("Log out")
+                } else {
+                    ProgressView()
                 }
             }
         }
