@@ -46,16 +46,15 @@ struct MovementDetailView: View {
             await viewModel.attemptLoadMovementDetail(id: viewModel.movement.id)
         }
         .toolbar {
-            HStack {
-                Button {
-                    viewModel.showDeleteConfirmationAlert = true
-                } label: {
-                    if viewModel.deleteActionLoading {
-                        ProgressView()
-                    } else {
-                        Label("Delete movement", systemImage: "trash")
-                    }
+            if viewModel.deleteActionLoading {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ProgressView()
                 }
+            }
+            ToolbarItem(placement: .primaryAction) {
+                NewMovementLogLink(movement: viewModel.movement)
+            }
+            ToolbarItemGroup(placement: .secondaryAction) {
                 NavigationLink() {
                     MovementInputView(
                         viewModel: MovementInputView.ViewModel(
@@ -63,7 +62,11 @@ struct MovementDetailView: View {
                 } label: {
                     Label("Edit movement", systemImage: "pencil.circle")
                 }
-                NewMovementLogLink(movement: viewModel.movement)
+                Button {
+                    viewModel.showDeleteConfirmationAlert = true
+                } label: {
+                    Label("Delete movement", systemImage: "trash")
+                }
             }
         }
         .navigationDestination(for: MovementAndLog.self) { selection in

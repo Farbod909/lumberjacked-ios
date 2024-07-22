@@ -9,11 +9,6 @@ import SwiftUI
 
 struct MovementInputView: View {
     @State var viewModel: ViewModel
-    @State var saveImage = ""
-    
-    @State var showErrorAlert = false
-    @State var errorAlertItem = ErrorAlertItem()
-    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -50,34 +45,38 @@ struct MovementInputView: View {
                     stickyText: "Rest seconds",
                     value: $viewModel.movement.restTime)
             }
-            Button {
-                Task {
-                    saveImage = "ellipsis"
-                    do {
-                        if viewModel.movement.id == 0 {
-                            try await viewModel.saveNewMovement()
-                        } else {
-                            try await viewModel.updateMovement()
-                        }
-                        saveImage = ""
-                        dismiss()
-                    } catch let error as HttpError {
-                        errorAlertItem = ErrorAlertItem(
-                            title: error.error, messages: error.messages)
-                        showErrorAlert = true
-                    }
-                }
-            } label: {
-                HStack {
-                    Text("Save")
-                    Image(systemName: saveImage)
-                }
-            }
         }
         .listRowSpacing(10)
         .navigationTitle(viewModel.movement.id == 0 ? 
                          "New Movement" : viewModel.movement.name)
-        .alert(errorAlertItem, isPresented: $showErrorAlert)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    Task {
+                        if viewModel.movement.id == 0 {
+                            guard await viewModel.attemptSaveNewMovement() else {
+                                return
+                            }
+                        } else {
+                            guard await viewModel.attemptUpdateMovement() else {
+                                return
+                            }
+                        }
+                        dismiss()
+                    }
+                } label: {
+                    if viewModel.saveActionLoading {
+                        ProgressView()
+                    } else {
+                        Text("Save")
+                    }
+                }
+            }
+        }
+        .onDisappear() {
+            viewModel.movement = Movement.empty()
+        }
+        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
     }
 }
 

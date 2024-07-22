@@ -13,31 +13,68 @@ extension MovementInputView {
         var container: ContainerView.ViewModel
         var movement: Movement
         
+        var showErrorAlert = false
+        var errorAlertItem = ErrorAlertItem()
+        
+        var saveActionLoading = false
+        
         init(container: ContainerView.ViewModel, movement: Movement) {
             self.container = container
             self.movement = movement
         }
         
-        func saveNewMovement() async throws {
-            try await Networking()
-                .request(
-                    options: Networking.RequestOptions(url: "/movements",
-                                                       body: movement.dto,
-                                                       method: .POST,
-                                                       headers: [
-                                                        ("application/json", "Content-Type")
-                                                       ]))
+        func attemptSaveNewMovement() async -> Bool {
+            saveActionLoading = true
+            do {
+                try await Networking()
+                    .request(
+                        options: Networking.RequestOptions(url: "/movements",
+                                                           body: movement.dto,
+                                                           method: .POST,
+                                                           headers: [
+                                                            ("application/json", "Content-Type")
+                                                           ]))
+                return true
+            } catch let error as HttpError {
+                errorAlertItem = ErrorAlertItem(
+                    title: error.error,
+                    messages: error.messages)
+                showErrorAlert = true
+            } catch {
+                errorAlertItem = ErrorAlertItem(
+                    title: "Unknown Error",
+                    messages: [error.localizedDescription])
+                showErrorAlert = true
+            }
+            saveActionLoading = false
+            return false
         }
         
-        func updateMovement() async throws {
-            try await Networking()
-                .request(
-                    options: Networking.RequestOptions(url: "/movements/\(movement.id)",
-                                                       body: movement.dto,
-                                                       method: .PATCH,
-                                                       headers: [
-                                                        ("application/json", "Content-Type")
-                                                       ]))
+        func attemptUpdateMovement() async -> Bool {
+            saveActionLoading = true
+            do {
+                try await Networking()
+                    .request(
+                        options: Networking.RequestOptions(url: "/movements/\(movement.id)",
+                                                           body: movement.dto,
+                                                           method: .PATCH,
+                                                           headers: [
+                                                            ("application/json", "Content-Type")
+                                                           ]))
+                return true
+            } catch let error as HttpError {
+                errorAlertItem = ErrorAlertItem(
+                    title: error.error,
+                    messages: error.messages)
+                showErrorAlert = true
+            } catch {
+                errorAlertItem = ErrorAlertItem(
+                    title: "Unknown Error",
+                    messages: [error.localizedDescription])
+                showErrorAlert = true
+            }
+            saveActionLoading = false
+            return false
         }
     }
 }
