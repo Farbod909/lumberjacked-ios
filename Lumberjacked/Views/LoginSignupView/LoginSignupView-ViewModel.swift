@@ -37,8 +37,10 @@ extension LoginSignupView {
                     headers: [
                         ("application/json", "Content-Type")
                     ]),
-                outputType: LoginResponse.self) {
-                Keychain.standard.save(response.accessToken, service: "accessToken", account: "lumberjacked")
+                outputType: LoginResponse.self
+            ) {
+                Keychain.standard.save(
+                    response.accessToken, service: "accessToken", account: "lumberjacked")
                 isLoadingToolbarAction = false
                 return true
             }

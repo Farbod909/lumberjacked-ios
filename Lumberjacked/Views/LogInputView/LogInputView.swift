@@ -55,6 +55,11 @@ struct LogInputView: View {
                 }
             }
         }
-        .navigationTitle(viewModel.movementLog.timestamp?.formatted(date: .abbreviated, time:.omitted) ?? "New Log")
+        .navigationTitle(
+            viewModel.movementLog.timestamp?.formatted(
+                date: .abbreviated,
+                time: .omitted) ??
+            "New Log"
+        )
     }
 }

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct LoginSignupView: View {
     @State var viewModel: ViewModel
-        
     @Environment(\.dismiss) var dismiss
 
     var body: some View {

@@ -76,7 +76,6 @@ struct MovementDetailView: View {
                     movementLog: selection.log,
                     movement: selection.movement))
         }
-//        .alert(viewModel.errorAlertItem, isPresented: $viewModel.showErrorAlert)
         .alert("Delete", isPresented: $viewModel.showDeleteConfirmationAlert) {
             Button("Delete", role: .destructive) {
                 Task {
@@ -144,7 +143,7 @@ struct RecommendationsView: View {
                     .padding(8)
                     .background(Color.init(uiColor: .systemGray6))
                     .cornerRadius(5)
-                    if (recommendation != recommendations.last) {
+                    if recommendation != recommendations.last {
                         Spacer(minLength: 1)
                     }
                 }
@@ -184,9 +183,11 @@ struct LogListView: View {
                 LazyVStack {
                     ForEach(
                         movement.movementLogs.sorted(
-                            by: { $0.timestamp! > $1.timestamp! }),
-                        id: \.self) { log in
-                            LogItem(movement: movement, log: log)
+                            by: { $0.timestamp! > $1.timestamp! }
+                        ),
+                        id: \.self
+                    ) { log in
+                        LogItem(movement: movement, log: log)
                     }
                 }
             }
@@ -243,6 +244,9 @@ struct NewMovementLogLink: View {
 
 #Preview {
     NavigationStack {
-        MovementDetailView(viewModel: MovementDetailView.ViewModel(container: ContainerView.ViewModel(), movement: Movement(id: 1, name: "Name", split: "Split", movementLogs: [])))
+        MovementDetailView(
+            viewModel: MovementDetailView.ViewModel(
+                container: ContainerView.ViewModel(),
+                movement: Movement(id: 1, name: "Name", split: "Split", movementLogs: [])))
     }
 }

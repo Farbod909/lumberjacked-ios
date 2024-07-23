@@ -16,9 +16,12 @@ extension LogInputView {
         var movement: Movement
         
         var toolbarActionLoading = false
-
         
-        init(container: ContainerView.ViewModel, movementLog: MovementLog, movement: Movement) {
+        init(
+            container: ContainerView.ViewModel,
+            movementLog: MovementLog,
+            movement: Movement
+        ) {
             self.container = container
             self.movementLog = movementLog
             self.movement = movement
@@ -30,7 +33,6 @@ extension LogInputView {
                 toolbarActionLoading = false
                 return false
             }
-            
             toolbarActionLoading = true
             let didSucceed = await container.attemptRequest(
                 options: Networking.RequestOptions(
@@ -47,12 +49,13 @@ extension LogInputView {
         func attemptSaveNewLog() async -> Bool {
             toolbarActionLoading = true
             let didSucceed = await container.attemptRequest(
-                options: Networking.RequestOptions(url: "/movements/\(movement.id)/logs",
-                                                   body: movementLog.dto,
-                                                   method: .POST,
-                                                   headers: [
-                                                    ("application/json", "Content-Type")
-                                                   ]))
+                options: Networking.RequestOptions(
+                    url: "/movements/\(movement.id)/logs",
+                    body: movementLog.dto,
+                    method: .POST,
+                    headers: [
+                        ("application/json", "Content-Type")
+                    ]))
             toolbarActionLoading = false
             return didSucceed
         }
@@ -63,11 +66,11 @@ extension LogInputView {
                 toolbarActionLoading = false
                 return false
             }
-            
             toolbarActionLoading = true
             let didSucceed = await container.attemptRequest(
-                options: Networking.RequestOptions(url: "/movement-logs/\(movementLogId)",
-                                                   method: .DELETE))
+                options: Networking.RequestOptions(
+                    url: "/movement-logs/\(movementLogId)",
+                    method: .DELETE))
             toolbarActionLoading = false
             return didSucceed
         }

@@ -14,7 +14,8 @@ extension HomeView {
         var movements = [Movement]()
         
         var isShowingLoginSheet = false
-        var isLoggedIn = Keychain.standard.read(service: "accessToken", account: "lumberjacked") != nil
+        var isLoggedIn = Keychain.standard.read(
+            service: "accessToken", account: "lumberjacked") != nil
         var isLoadingMovements = false
         var isLoadingLogout = false
         
@@ -31,7 +32,7 @@ extension HomeView {
             for movement in movements.sorted(by: {
                 $0.mostRecentLogTimestamp >= $1.mostRecentLogTimestamp
             }) {
-                if (!uniqueSplits.contains(movement.split)) {
+                if !uniqueSplits.contains(movement.split) {
                     orderedSplits.append(movement.split)
                     uniqueSplits.insert(movement.split)
                 }
@@ -59,8 +60,9 @@ extension HomeView {
             if isLoggedIn {
                 isLoadingMovements = true
                 if let response = await container.attemptRequest(
-                    options: Networking.RequestOptions(
-                        url: "/movements"), outputType: [Movement].self) {
+                    options: Networking.RequestOptions(url: "/movements"),
+                    outputType: [Movement].self
+                ) {
                     movements = response
                 }
                 isLoadingMovements = false
@@ -69,7 +71,9 @@ extension HomeView {
                 
         func attemptLogout() async {
             isLoadingLogout = true
-            if await container.attemptRequest(options: Networking.RequestOptions(url: "/auth/logout")) {
+            if await container.attemptRequest(
+                options: Networking.RequestOptions(url: "/auth/logout")
+            ) {
                 Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
                 isShowingLoginSheet = true
                 isLoggedIn = false
@@ -83,7 +87,9 @@ extension HomeView {
                 isLoggedIn = false
                 isShowingLoginSheet = true
             } else {
-                print(Keychain.standard.read(service: "accessToken", account: "lumberjacked", type: String.self)!)
+                // DEBUG
+                print(Keychain.standard.read(
+                    service: "accessToken", account: "lumberjacked", type: String.self)!)
             }
         }
     }

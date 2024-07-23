@@ -23,7 +23,9 @@ extension MovementDetailView {
         
         func attemptLoadMovementDetail(id: Int) async {
             if let response = await container.attemptRequest(
-                options: Networking.RequestOptions(url: "/movements/\(id)"), outputType: Movement.self) {
+                options: Networking.RequestOptions(url: "/movements/\(id)"),
+                outputType: Movement.self
+            ) {
                 movement = response
             }
         }
@@ -31,8 +33,7 @@ extension MovementDetailView {
         func attemptDeleteMovement(id: Int) async -> Bool {
             deleteActionLoading = true
             let didSucceed = await container.attemptRequest(
-                options: Networking.RequestOptions(
-                    url: "/movements/\(id)", method: .DELETE))
+                options: Networking.RequestOptions(url: "/movements/\(id)", method: .DELETE))
             deleteActionLoading = false
             return didSucceed
         }

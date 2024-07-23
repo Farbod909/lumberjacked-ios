@@ -62,6 +62,7 @@ class Networking {
     @discardableResult
     func request(options: RequestOptions) async throws -> Data {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
+            // DEBUG
             print("Invalid URL")
             throw LocalNetworkingError(message: "Invalid URL")
         }
@@ -88,7 +89,9 @@ class Networking {
         case .none: break // do nothing
         }
         
-        if let accessToken = Keychain.standard.read(service: "accessToken", account: "lumberjacked", type: String.self) {
+        if let accessToken = Keychain.standard.read(
+            service: "accessToken", account: "lumberjacked", type: String.self
+        ) {
             self.sessionConfiguration.httpAdditionalHeaders = [
                 "Authorization": "Bearer \(accessToken)"
             ]
@@ -100,6 +103,7 @@ class Networking {
         do {
             if let requestBody = options.body {
                 guard let encoded = try? JSONEncoder().encode(requestBody) else {
+                    // DEBUG
                     print("Failed to encode data")
                     throw LocalNetworkingError(message: "Failed to encode data")
                 }
@@ -109,17 +113,32 @@ class Networking {
                 (data, response) = try await session.data(for: request)
             }
         } catch {
+            // DEBUG
             print("Failed to fetch data: \(error.localizedDescription)")
-            throw LocalNetworkingError(message: "Failed to fetch data: \(error.localizedDescription)")
+            throw LocalNetworkingError(
+                message: "Failed to fetch data: \(error.localizedDescription)")
         }
         
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode > 299 {
-            if let errorResponse = try? decoder.decode(ErrorResponseMultiMessage.self, from: data) {
-                throw RemoteNetworkingError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: errorResponse.message)
-            } else if let errorResponse = try? decoder.decode(ErrorResponseSingleMessage.self, from: data) {
-                throw RemoteNetworkingError(statusCode: errorResponse.statusCode, error: errorResponse.error, messages: [errorResponse.message])
+            if let errorResponse = try? decoder.decode(
+                ErrorResponseMultiMessage.self, from: data
+            ) {
+                throw RemoteNetworkingError(
+                    statusCode: errorResponse.statusCode,
+                    error: errorResponse.error,
+                    messages: errorResponse.message)
+            } else if let errorResponse = try? decoder.decode(
+                ErrorResponseSingleMessage.self, from: data
+            ) {
+                throw RemoteNetworkingError(
+                    statusCode: errorResponse.statusCode,
+                    error: errorResponse.error,
+                    messages: [errorResponse.message])
             } else {
-                throw RemoteNetworkingError(statusCode: httpResponse.statusCode, error: "Server error", messages: [])
+                throw RemoteNetworkingError(
+                    statusCode: httpResponse.statusCode,
+                    error: "Server error",
+                    messages: [])
             }
         }
         return data
@@ -129,6 +148,7 @@ class Networking {
         let data = try await request(options: options)
                 
         guard let decodedResponse = try? decoder.decode(ResponseType.self, from: data) else {
+            // DEBUG
             print("Failed to decode data")
             throw LocalNetworkingError(message: "Failed to decode data")
         }

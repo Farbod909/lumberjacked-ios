@@ -30,7 +30,7 @@ struct HomeView: View {
                 NewMovementLink(viewModel: viewModel)
             }
             ToolbarItem(placement: .topBarLeading) {
-                if (!viewModel.isLoadingLogout) {
+                if !viewModel.isLoadingLogout {
                     Button {
                         Task {
                             await viewModel.attemptLogout()
@@ -49,7 +49,9 @@ struct HomeView: View {
                 viewModel.isLoggedIn = true
                 viewModel.isLoadingMovements = true
             }, content: {
-                LoginSignupView(viewModel: LoginSignupView.ViewModel(container: viewModel.container))
+                LoginSignupView(
+                    viewModel: LoginSignupView.ViewModel(
+                        container: viewModel.container))
             })
         .onAppear() {
             viewModel.showLoginPageIfNotLoggedIn()
@@ -88,7 +90,7 @@ struct MovementsRowView: View {
         HStack {
             Text(movement.name)
             Spacer()
-            if (!movement.movementLogs.isEmpty) {
+            if !movement.movementLogs.isEmpty {
                 if let reps = movement.movementLogs[0].reps {
                     Text(reps.formatted()).frame(minWidth: 36)
                 }

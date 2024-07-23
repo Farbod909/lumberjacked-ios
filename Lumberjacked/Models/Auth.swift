@@ -20,5 +20,4 @@ struct SignupRequest: Codable {
     var email: String
     var password: String
     var passwordConfirmation: String
-    
 }

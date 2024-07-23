@@ -20,16 +20,21 @@ extension ContainerView {
             HomeView.ViewModel(container: self)
         }()
         
-        func attemptRequest<ResponseType: Decodable>(options: Networking.RequestOptions, outputType: ResponseType.Type) async -> ResponseType? {
+        func attemptRequest<ResponseType: Decodable>(
+            options: Networking.RequestOptions,
+            outputType: ResponseType.Type
+        ) async -> ResponseType? {
             do {
                 return try await Networking.shared.request(options: options)
             } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
-                    title: error.error, messages: error.messages)
+                    title: error.error,
+                    messages: error.messages)
                 showErrorAlert = true
             } catch {
                 errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error", messages: [error.localizedDescription])
+                    title: "Unknown Error",
+                    messages: [error.localizedDescription])
                 showErrorAlert = true
             }
             return nil
@@ -41,11 +46,13 @@ extension ContainerView {
                 return true
             } catch let error as RemoteNetworkingError {
                 errorAlertItem = ErrorAlertItem(
-                    title: error.error, messages: error.messages)
+                    title: error.error, 
+                    messages: error.messages)
                 showErrorAlert = true
             } catch {
                 errorAlertItem = ErrorAlertItem(
-                    title: "Unknown Error", messages: [error.localizedDescription])
+                    title: "Unknown Error",
+                    messages: [error.localizedDescription])
                 showErrorAlert = true
             }
             return false

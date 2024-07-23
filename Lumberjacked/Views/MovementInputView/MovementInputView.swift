@@ -121,5 +121,8 @@ struct MovementInputIntFieldView: View {
 
 
 #Preview {
-    MovementInputView(viewModel: MovementInputView.ViewModel(container: ContainerView.ViewModel(), movement: Movement.empty()))
+    MovementInputView(
+        viewModel: MovementInputView.ViewModel(
+            container: ContainerView.ViewModel(),
+            movement: Movement.empty()))
 }
