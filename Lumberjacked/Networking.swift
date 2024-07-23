@@ -13,10 +13,6 @@ struct RemoteNetworkingError: Error {
     var messages: [String]
 }
 
-struct LocalNetworkingError: Error {
-    var message: String
-}
-
 class Networking {
     static let shared = Networking()
         
@@ -60,11 +56,10 @@ class Networking {
     }
         
     @discardableResult
-    func request(options: RequestOptions) async throws -> Data {
+    func request(options: RequestOptions) async throws -> Data? {
         guard let url = URL(string: "\(Networking.host)\(options.url)") else {
-            // DEBUG
-            print("Invalid URL")
-            throw LocalNetworkingError(message: "Invalid URL")
+            assertionFailure("Invalid URL")
+            return nil
         }
         
         var request = URLRequest(url: url)
@@ -100,25 +95,28 @@ class Networking {
         
         var response = URLResponse()
         var data = Data()
-        do {
-            if let requestBody = options.body {
-                guard let encoded = try? JSONEncoder().encode(requestBody) else {
-                    // DEBUG
-                    print("Failed to encode data")
-                    throw LocalNetworkingError(message: "Failed to encode data")
+        if let requestBody = options.body {
+            do {
+                let encoded = try JSONEncoder().encode(requestBody)
+                do {
+                    (data, response) = try await session.upload(for: request, from: encoded)
+                } catch {
+                    assertionFailure("Failed to fetch data: \(error)")
+                    return nil
                 }
-
-                (data, response) = try await session.upload(for: request, from: encoded)
-            } else {
-                (data, response) = try await session.data(for: request)
+            } catch {
+                assertionFailure("Failed to encode data: \(error)")
+                return nil
             }
-        } catch {
-            // DEBUG
-            print("Failed to fetch data: \(error.localizedDescription)")
-            throw LocalNetworkingError(
-                message: "Failed to fetch data: \(error.localizedDescription)")
+        } else {
+            do {
+                (data, response) = try await session.data(for: request)
+            } catch {
+                assertionFailure("Failed to fetch data: \(error)")
+                return nil
+            }
         }
-        
+                
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode > 299 {
             if let errorResponse = try? decoder.decode(
                 ErrorResponseMultiMessage.self, from: data
@@ -144,15 +142,16 @@ class Networking {
         return data
     }
     
-    func request<ResponseType: Decodable>(options: RequestOptions) async throws -> ResponseType {
-        let data = try await request(options: options)
-                
-        guard let decodedResponse = try? decoder.decode(ResponseType.self, from: data) else {
-            // DEBUG
-            print("Failed to decode data")
-            throw LocalNetworkingError(message: "Failed to decode data")
+    func request<ResponseType: Decodable>(options: RequestOptions) async throws -> ResponseType? {
+        guard let data = try await request(options: options) else {
+            return nil
         }
-        
-        return decodedResponse
+        do {
+            let decodedResponse = try decoder.decode(ResponseType.self, from: data)
+            return decodedResponse
+        } catch {
+            assertionFailure("Failed do decode data: \(error)")
+        }
+        return nil
     }
 }
