@@ -12,16 +12,14 @@ struct HomeView: View {
         
     var body: some View {
         ZStack {
-            if viewModel.isLoadingMovements {
-                if viewModel.movements.isEmpty {
+            if viewModel.movements.isEmpty {
+                if viewModel.isLoadingMovements {
                     ProgressView()
+                } else {
+                    NewMovementLink(viewModel: viewModel)
                 }
             } else {
-                if viewModel.movements.isEmpty {
-                    NewMovementLink(viewModel: viewModel)
-                } else {
-                    MovementsListView(viewModel: viewModel)
-                }
+                MovementsListView(viewModel: viewModel)
             }
         }
         .task(id: viewModel.isLoggedIn) {

@@ -15,7 +15,7 @@ extension HomeView {
         
         var isShowingLoginSheet = false
         var isLoggedIn = Keychain.standard.read(service: "accessToken", account: "lumberjacked") != nil
-        var isLoadingMovements = true
+        var isLoadingMovements = false
         var isLoadingLogout = false
         
         init(container: ContainerView.ViewModel) {
