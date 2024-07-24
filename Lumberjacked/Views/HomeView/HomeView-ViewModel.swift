@@ -16,6 +16,7 @@ extension HomeView {
         var isLoggedIn = Keychain.standard.read(
             service: "accessToken", account: "lumberjacked") != nil
         var isLoadingMovements = false
+        var hasNotYetAttemptedToLoadMovements = true
         var isLoadingLogout = false
                 
         /*
@@ -53,6 +54,7 @@ extension HomeView {
 
         func attemptLoadAllMovements() async {
             if isLoggedIn {
+                hasNotYetAttemptedToLoadMovements = false
                 isLoadingMovements = true
                 if let response = await NetworkingRequest(
                     options: Networking.RequestOptions(url: "/movements"),

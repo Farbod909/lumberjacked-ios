@@ -13,7 +13,9 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             if viewModel.movements.isEmpty {
-                if viewModel.isLoadingMovements {
+                if viewModel.hasNotYetAttemptedToLoadMovements {
+                    // display nothing
+                } else if viewModel.isLoadingMovements {
                     ProgressView()
                 } else {
                     NewMovementLink(viewModel: viewModel)
@@ -23,6 +25,7 @@ struct HomeView: View {
             }
         }
         .task(id: viewModel.isLoggedIn) {
+            viewModel.hasNotYetAttemptedToLoadMovements = true
             await viewModel.attemptLoadAllMovements()
         }
         .toolbar {
