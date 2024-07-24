@@ -91,6 +91,7 @@ struct LoginSignupView: View {
                     }
                 }
             }
+            .alert(viewModel.errorAlertItem, isPresented: $viewModel.errorAlertItemIsPresented)
         }
     }
 }

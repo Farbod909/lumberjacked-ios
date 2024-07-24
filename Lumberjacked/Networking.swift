@@ -6,11 +6,53 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct RemoteNetworkingError: Error {
     var statusCode: Int
     var error: String
     var messages: [String]
+}
+
+struct NetworkingRequest {
+    var options: Networking.RequestOptions
+    @Binding var errorAlertItem: ErrorAlertItem;
+    @Binding var errorAlertItemIsPresented: Bool
+    
+    func attempt() async -> Bool {
+        do {
+            try await Networking.shared.request(options: options)
+            return true
+        } catch let error as RemoteNetworkingError {
+            errorAlertItem = ErrorAlertItem(
+                title: error.error,
+                messages: error.messages)
+            errorAlertItemIsPresented = true
+        } catch {
+            errorAlertItem = ErrorAlertItem(
+                title: "Unknown Error",
+                messages: [error.localizedDescription])
+            errorAlertItemIsPresented = true
+        }
+        return false
+    }
+    
+    func attempt<ResponseType: Decodable>(outputType: ResponseType.Type) async -> ResponseType? {
+        do {
+            return try await Networking.shared.request(options: options)
+        } catch let error as RemoteNetworkingError {
+            errorAlertItem = ErrorAlertItem(
+                title: error.error,
+                messages: error.messages)
+            errorAlertItemIsPresented = true
+        } catch {
+            errorAlertItem = ErrorAlertItem(
+                title: "Unknown Error",
+                messages: [error.localizedDescription])
+            errorAlertItemIsPresented = true
+        }
+        return nil
+    }
 }
 
 class Networking {

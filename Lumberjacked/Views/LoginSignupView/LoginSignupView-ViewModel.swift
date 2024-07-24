@@ -9,9 +9,7 @@ import SwiftUI
 
 extension LoginSignupView {
     @Observable
-    class ViewModel {        
-        var container: ContainerView.ViewModel
-
+    class ViewModel: BaseViewModel {
         var firstName = ""
         var lastName = ""
         var email = ""
@@ -20,16 +18,28 @@ extension LoginSignupView {
         
         var isShowingSignup = false
         var isLoadingToolbarAction = false
-                
-        init(container: ContainerView.ViewModel) {
-            self.container = container
+        
+        var errorAlertItem = ErrorAlertItem()
+        var errorAlertItemIsPresented = false
+        
+        var errorAlertItemBinding: Binding<ErrorAlertItem> {
+            Binding(
+                get: { self.errorAlertItem },
+                set: { self.errorAlertItem = $0 }
+            )
+        }
+        var errorAlertItemIsPresentedBinding: Binding<Bool> {
+            Binding(
+                get: { self.errorAlertItemIsPresented },
+                set: { self.errorAlertItemIsPresented = $0 }
+            )
         }
         
         func attemptLogin() async -> Bool {
             let loginRequest = LoginRequest(email: email, password: password)
             
             isLoadingToolbarAction = true
-            if let response = await container.attemptRequest(
+            if let response = await NetworkingRequest(
                 options: Networking.RequestOptions(
                     url: "/auth/login/password",
                     body: loginRequest,
@@ -37,8 +47,9 @@ extension LoginSignupView {
                     headers: [
                         ("application/json", "Content-Type")
                     ]),
-                outputType: LoginResponse.self
-            ) {
+                errorAlertItem: errorAlertItemBinding,
+                errorAlertItemIsPresented: errorAlertItemIsPresentedBinding
+            ).attempt(outputType: LoginResponse.self) {
                 Keychain.standard.save(
                     response.accessToken, service: "accessToken", account: "lumberjacked")
                 isLoadingToolbarAction = false
@@ -57,14 +68,18 @@ extension LoginSignupView {
                 passwordConfirmation: passwordConfirmation)
 
             isLoadingToolbarAction = true
-            let didSucceed = await container.attemptRequest(
+            let didSucceed = await NetworkingRequest(
                 options: Networking.RequestOptions(
                     url: "/users",
                     body: signupRequest,
                     method: .POST,
                     headers: [
                         ("application/json", "Content-Type")
-                    ]))
+                    ]
+                ),
+                errorAlertItem: errorAlertItemBinding,
+                errorAlertItemIsPresented: errorAlertItemIsPresentedBinding
+            ).attempt()
             isLoadingToolbarAction = false
             return didSucceed
         }

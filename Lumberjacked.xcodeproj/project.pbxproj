@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E0BF6AB2C50880600675D8A /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0BF6AA2C50880600675D8A /* BaseViewModel.swift */; };
 		8E0CA2C72C3675E300335C57 /* LumberjackedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0CA2C62C3675E300335C57 /* LumberjackedApp.swift */; };
 		8E0CA2C92C3675E300335C57 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0CA2C82C3675E300335C57 /* HomeView.swift */; };
 		8E0CA2CB2C3675E400335C57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E0CA2CA2C3675E400335C57 /* Assets.xcassets */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E0BF6AA2C50880600675D8A /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		8E0CA2C32C3675E300335C57 /* Lumberjacked.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumberjacked.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0CA2C62C3675E300335C57 /* LumberjackedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumberjackedApp.swift; sourceTree = "<group>"; };
 		8E0CA2C82C3675E300335C57 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 		8E5EB9B02C3A13C900186172 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8E0BF6AA2C50880600675D8A /* BaseViewModel.swift */,
 				8E5EB9B92C3CF39000186172 /* ContainerView */,
 				8E5EB9AD2C3A138800186172 /* HomeView */,
 				8E5EB9CF2C4B51CF00186172 /* LoginSignupView */,
@@ -272,6 +275,7 @@
 				8E5EB9B22C3A3D4B00186172 /* HomeView-ViewModel.swift in Sources */,
 				8E5EB9CE2C4B51B900186172 /* LoginSignupView.swift in Sources */,
 				8E5EB9C82C44F1B100186172 /* MovementInputView-ViewModel.swift in Sources */,
+				8E0BF6AB2C50880600675D8A /* BaseViewModel.swift in Sources */,
 				8E5EB98C2C37B34C00186172 /* Movement.swift in Sources */,
 				8E665BBF2C4C729000BCB795 /* Alert.swift in Sources */,
 				8E5EB9CA2C4A26DB00186172 /* LoginSignupView-ViewModel.swift in Sources */,

@@ -16,6 +16,6 @@ struct ContainerView: View {
         }
         .alert(
             viewModel.errorAlertItem,
-            isPresented: $viewModel.showErrorAlert)
+            isPresented: $viewModel.errorAlertItemIsPresented)
     }
 }

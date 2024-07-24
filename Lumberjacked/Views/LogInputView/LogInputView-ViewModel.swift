@@ -9,8 +9,7 @@ import SwiftUI
 
 extension LogInputView {
     @Observable
-    class ViewModel {
-        var container: ContainerView.ViewModel
+    class ViewModel: BaseViewModel {
         
         var movementLog: MovementLog
         var movement: Movement
@@ -22,9 +21,9 @@ extension LogInputView {
             movementLog: MovementLog,
             movement: Movement
         ) {
-            self.container = container
             self.movementLog = movementLog
             self.movement = movement
+            super.init(container: container)
         }
         
         func attemptUpdateLog() async -> Bool {
@@ -34,28 +33,34 @@ extension LogInputView {
                 return false
             }
             toolbarActionLoading = true
-            let didSucceed = await container.attemptRequest(
+            let didSucceed = await NetworkingRequest(
                 options: Networking.RequestOptions(
                     url: "/movement-logs/\(movementLogId)",
                     body: movementLog.dto,
                     method: .PATCH,
                     headers: [
                         ("application/json", "Content-Type")
-                    ]))
+                    ]),
+                errorAlertItem: containerErrorAlertItem,
+                errorAlertItemIsPresented: containerErrorAlertItemIsPresented)
+                .attempt()
             toolbarActionLoading = false
             return didSucceed
         }
         
         func attemptSaveNewLog() async -> Bool {
             toolbarActionLoading = true
-            let didSucceed = await container.attemptRequest(
+            let didSucceed = await NetworkingRequest(
                 options: Networking.RequestOptions(
                     url: "/movements/\(movement.id)/logs",
                     body: movementLog.dto,
                     method: .POST,
                     headers: [
                         ("application/json", "Content-Type")
-                    ]))
+                    ]),
+                errorAlertItem: containerErrorAlertItem,
+                errorAlertItemIsPresented: containerErrorAlertItemIsPresented)
+                .attempt()
             toolbarActionLoading = false
             return didSucceed
         }
@@ -67,10 +72,13 @@ extension LogInputView {
                 return false
             }
             toolbarActionLoading = true
-            let didSucceed = await container.attemptRequest(
+            let didSucceed = await NetworkingRequest(
                 options: Networking.RequestOptions(
                     url: "/movement-logs/\(movementLogId)",
-                    method: .DELETE))
+                    method: .DELETE),
+                errorAlertItem: containerErrorAlertItem,
+                errorAlertItemIsPresented: containerErrorAlertItemIsPresented)
+                .attempt()
             toolbarActionLoading = false
             return didSucceed
         }

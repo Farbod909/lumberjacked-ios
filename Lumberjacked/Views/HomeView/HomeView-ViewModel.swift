@@ -9,8 +9,7 @@ import SwiftUI
 
 extension HomeView {
     @Observable
-    class ViewModel {
-        var container: ContainerView.ViewModel
+    class ViewModel: BaseViewModel {
         var movements = [Movement]()
         
         var isShowingLoginSheet = false
@@ -18,11 +17,7 @@ extension HomeView {
             service: "accessToken", account: "lumberjacked") != nil
         var isLoadingMovements = false
         var isLoadingLogout = false
-        
-        init(container: ContainerView.ViewModel) {
-            self.container = container
-        }
-        
+                
         /*
          Get all unique splits, ordered by most recent log timestamp.
          */
@@ -59,10 +54,11 @@ extension HomeView {
         func attemptLoadAllMovements() async {
             if isLoggedIn {
                 isLoadingMovements = true
-                if let response = await container.attemptRequest(
+                if let response = await NetworkingRequest(
                     options: Networking.RequestOptions(url: "/movements"),
-                    outputType: [Movement].self
-                ) {
+                    errorAlertItem: containerErrorAlertItem,
+                    errorAlertItemIsPresented: containerErrorAlertItemIsPresented
+                ).attempt(outputType: [Movement].self) {
                     movements = response
                 }
                 isLoadingMovements = false
@@ -71,9 +67,11 @@ extension HomeView {
                 
         func attemptLogout() async {
             isLoadingLogout = true
-            if await container.attemptRequest(
-                options: Networking.RequestOptions(url: "/auth/logout")
-            ) {
+            if await NetworkingRequest(
+                options: Networking.RequestOptions(url: "/auth/logout"),
+                errorAlertItem: containerErrorAlertItem,
+                errorAlertItemIsPresented: containerErrorAlertItemIsPresented
+            ).attempt() {
                 Keychain.standard.delete(service: "accessToken", account: "lumberjacked")
                 isShowingLoginSheet = true
                 isLoggedIn = false

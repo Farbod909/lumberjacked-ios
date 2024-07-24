@@ -9,31 +9,34 @@ import SwiftUI
 
 extension MovementDetailView {
     @Observable
-    class ViewModel {
-        var container: ContainerView.ViewModel
+    class ViewModel: BaseViewModel {
         var movement: Movement
                 
         var deleteActionLoading = false
         var showDeleteConfirmationAlert = false
                 
         init(container: ContainerView.ViewModel, movement: Movement) {
-            self.container = container
             self.movement = movement
+            super.init(container: container)
         }
         
         func attemptLoadMovementDetail(id: Int) async {
-            if let response = await container.attemptRequest(
+            if let response = await NetworkingRequest(
                 options: Networking.RequestOptions(url: "/movements/\(id)"),
-                outputType: Movement.self
-            ) {
+                errorAlertItem: containerErrorAlertItem,
+                errorAlertItemIsPresented: containerErrorAlertItemIsPresented
+            ).attempt(outputType: Movement.self) {
                 movement = response
             }
         }
         
         func attemptDeleteMovement(id: Int) async -> Bool {
             deleteActionLoading = true
-            let didSucceed = await container.attemptRequest(
-                options: Networking.RequestOptions(url: "/movements/\(id)", method: .DELETE))
+            let didSucceed = await NetworkingRequest(
+                options: Networking.RequestOptions(url: "/movements/\(id)", method: .DELETE),
+                errorAlertItem: containerErrorAlertItem,
+                errorAlertItemIsPresented: containerErrorAlertItemIsPresented)
+            .attempt()
             deleteActionLoading = false
             return didSucceed
         }
