@@ -73,13 +73,20 @@ struct MovementsListView: View {
     
     var body: some View {
         List {
-            ForEach(viewModel.getAllSplits(), id: \.self) { split in
+//            ForEach(viewModel.getAllSplits(), id: \.self) { split in
+//                Section() {
+//                    ForEach(viewModel.getMovements(split: split)) { movement in
+//                        MovementsRowView(movement: movement)
+//                    }
+//                } header: {
+//                    MovementsSplitHeaderView(split: split)
+//                }
+//            }
+            ForEach(viewModel.getUniqueLastLoggedDays(), id: \.self) { lastLoggedDay in
                 Section() {
-                    ForEach(viewModel.getMovements(for: split)) { movement in
+                    ForEach(viewModel.getMovements(lastLoggedDay: lastLoggedDay)) { movement in
                         MovementsRowView(movement: movement)
                     }
-                } header: {
-                    MovementsSplitHeaderView(split: split)
                 }
             }
         }

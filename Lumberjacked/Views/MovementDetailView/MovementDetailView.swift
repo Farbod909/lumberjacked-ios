@@ -247,6 +247,6 @@ struct NewMovementLogLink: View {
         MovementDetailView(
             viewModel: MovementDetailView.ViewModel(
                 container: ContainerView.ViewModel(),
-                movement: Movement(id: 1, name: "Name", split: "Split", movementLogs: [])))
+                movement: Movement(id: 1, name: "Name", split: "Split", createdAt: Date.now, movementLogs: [])))
     }
 }

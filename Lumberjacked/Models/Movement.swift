@@ -12,12 +12,24 @@ struct Movement: Codable, Hashable, Identifiable  {
     var name: String
     var split: String
     var description: String?
+    var createdAt: Date
     
     // recommendations
     var warmupSets: String?
     var workingSets: String?
     var rpe: String?
     var restTime: Int? // in seconds
+    
+    var lastLoggedDay: String {
+        if movementLogs.isEmpty {
+            return ""
+        } else {
+            let dateComponents = Calendar.current.dateComponents(
+                [.day, .year, .month],
+                from: movementLogs[0].timestamp!)
+            return "\(dateComponents.year!)-\(dateComponents.month!)-\(dateComponents.day!)"
+        }
+    }
     
     var movementLogs: [MovementLog]
     
@@ -26,11 +38,11 @@ struct Movement: Codable, Hashable, Identifiable  {
     }
     
     var mostRecentLogTimestamp: Date {
-        return movementLogs.first?.timestamp ?? Date.distantPast
+        return movementLogs.first?.timestamp ?? Date.distantFuture
     }
     
     static func empty() -> Movement {
-        return Movement(id: 0, name: "", split: "", movementLogs: [])
+        return Movement(id: 0, name: "", split: "", createdAt: Date.now, movementLogs: [])
     }
     
     struct MovementDTO: Codable {

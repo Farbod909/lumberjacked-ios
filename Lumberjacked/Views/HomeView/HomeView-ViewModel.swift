@@ -18,8 +18,25 @@ extension HomeView {
         var isLoadingMovements = false
         var hasNotYetAttemptedToLoadMovements = true
         var isLoadingLogout = false
-                
-        /*
+        
+        /**
+         Get all unique values of lastLoggedDay, ordered by most recent.
+         */
+        func getUniqueLastLoggedDays() -> [String] {
+            var uniqueLastLoggedDays = Set<String>()
+            var orderedLastLoggedDays = Array<String>()
+            for movement in movements.sorted(by: {
+                $0.mostRecentLogTimestamp >= $1.mostRecentLogTimestamp
+            }) {
+                if !uniqueLastLoggedDays.contains(movement.lastLoggedDay) {
+                    orderedLastLoggedDays.append(movement.lastLoggedDay)
+                    uniqueLastLoggedDays.insert(movement.lastLoggedDay)
+                }
+            }
+            return orderedLastLoggedDays
+        }
+        
+        /**
          Get all unique splits, ordered by most recent log timestamp.
          */
         func getAllSplits() -> [String] {
@@ -36,14 +53,42 @@ extension HomeView {
             return orderedSplits
         }
 
-        /*
+        /**
          Get all movements for a given split, ordered by most recent log
          timestamp.
          */
-        func getMovements(for split: String) -> [Movement] {
+        func getMovements(lastLoggedDay: String) -> [Movement] {
             var splitMovements = [Movement]()
             for movement in movements.sorted(by: {
-                $0.mostRecentLogTimestamp >= $1.mostRecentLogTimestamp
+                // order by most recent log timestamp, ascending. If both are equal (i.e. both are
+                // not present), then order by creation timestamp, ascending.
+                if $0.mostRecentLogTimestamp == $1.mostRecentLogTimestamp {
+                    return $0.createdAt <= $1.createdAt
+                } else {
+                    return $0.mostRecentLogTimestamp < $1.mostRecentLogTimestamp
+                }
+            }) {
+                if movement.lastLoggedDay == lastLoggedDay {
+                    splitMovements.append(movement)
+                }
+            }
+            return splitMovements
+        }
+                
+        /**
+         Get all movements for a given split, ordered by most recent log
+         timestamp.
+         */
+        func getMovements(split: String) -> [Movement] {
+            var splitMovements = [Movement]()
+            for movement in movements.sorted(by: {
+                // order by most recent log timestamp, ascending. If both are equal (i.e. both are
+                // not present), then order by creation timestamp, ascending.
+                if $0.mostRecentLogTimestamp == $1.mostRecentLogTimestamp {
+                    return $0.createdAt <= $1.createdAt
+                } else {
+                    return $0.mostRecentLogTimestamp < $1.mostRecentLogTimestamp
+                }
             }) {
                 if movement.split == split {
                     splitMovements.append(movement)
