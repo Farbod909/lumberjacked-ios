@@ -61,7 +61,7 @@ struct LogInputView: View {
                         dismiss()
                     }
                 }
-                .disabled(!viewModel.movementLog.isFullyPopulated)
+                .disabled(!viewModel.movementLog.requiredFieldsFullyPopulated)
             }
             if viewModel.movementLog.id != nil {
                 ToolbarItem(placement: .secondaryAction) {

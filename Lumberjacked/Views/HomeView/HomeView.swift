@@ -73,13 +73,13 @@ struct MovementsListView: View {
     
     var body: some View {
         List {
-//            ForEach(viewModel.getAllSplits(), id: \.self) { split in
+//            ForEach(viewModel.getAllCategories(), id: \.self) { category in
 //                Section() {
-//                    ForEach(viewModel.getMovements(split: split)) { movement in
+//                    ForEach(viewModel.getMovements(category: category)) { movement in
 //                        MovementsRowView(movement: movement)
 //                    }
 //                } header: {
-//                    MovementsSplitHeaderView(split: split)
+//                    MovementsCategoryHeaderView(category: category)
 //                }
 //            }
             ForEach(viewModel.getUniqueLastLoggedDays(), id: \.self) { lastLoggedDay in
@@ -115,12 +115,12 @@ struct MovementsRowView: View {
     }
 }
 
-struct MovementsSplitHeaderView: View {
-    var split: String
+struct MovementsCategoryHeaderView: View {
+    var category: String
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(split)
+            Text(category)
                 .font(.title)
                 .textCase(nil)
                 .bold()

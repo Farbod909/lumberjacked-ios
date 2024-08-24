@@ -19,13 +19,13 @@ struct MovementInputView: View {
                     stickyText: "Name",
                     text: $viewModel.movement.name)
                 MovementInputTextFieldView(
-                    placeholderText: "Split",
-                    stickyText: "Split",
-                    text: $viewModel.movement.split)
+                    placeholderText: "Category",
+                    stickyText: "Category",
+                    text: $viewModel.movement.category)
                 MovementInputTextFieldView(
-                    placeholderText: "Description",
-                    stickyText: "Description",
-                    text: $viewModel.movement.description.bound)
+                    placeholderText: "Notes",
+                    stickyText: "Notes",
+                    text: $viewModel.movement.notes.bound)
             }
             Section("Recommendations") {
                 MovementInputTextFieldView(
@@ -36,6 +36,10 @@ struct MovementInputView: View {
                     placeholderText: "Working sets",
                     stickyText: "Working sets",
                     text: $viewModel.movement.workingSets.bound)
+                MovementInputTextFieldView(
+                    placeholderText: "Rep range",
+                    stickyText: "Rep range",
+                    text: $viewModel.movement.repRange.bound)
                 MovementInputTextFieldView(
                     placeholderText: "RPE",
                     stickyText: "RPE",

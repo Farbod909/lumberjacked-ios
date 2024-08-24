@@ -37,24 +37,24 @@ extension HomeView {
         }
         
         /**
-         Get all unique splits, ordered by most recent log timestamp.
+         Get all unique categories, ordered by most recent log timestamp.
          */
-        func getAllSplits() -> [String] {
-            var uniqueSplits = Set<String>()
-            var orderedSplits = Array<String>()
+        func getAllCategories() -> [String] {
+            var uniqueCategories = Set<String>()
+            var orderedCategories = Array<String>()
             for movement in movements.sorted(by: {
                 $0.mostRecentLogTimestamp >= $1.mostRecentLogTimestamp
             }) {
-                if !uniqueSplits.contains(movement.split) {
-                    orderedSplits.append(movement.split)
-                    uniqueSplits.insert(movement.split)
+                if !uniqueCategories.contains(movement.category) {
+                    orderedCategories.append(movement.category)
+                    uniqueCategories.insert(movement.category)
                 }
             }
-            return orderedSplits
+            return orderedCategories
         }
 
         /**
-         Get all movements for a given split, ordered by most recent log
+         Get all movements grouped by last day that they were logged, ordered by most recent log
          timestamp.
          */
         func getMovements(lastLoggedDay: String) -> [Movement] {
@@ -76,10 +76,10 @@ extension HomeView {
         }
                 
         /**
-         Get all movements for a given split, ordered by most recent log
+         Get all movements for a given category, ordered by most recent log
          timestamp.
          */
-        func getMovements(split: String) -> [Movement] {
+        func getMovements(category: String) -> [Movement] {
             var splitMovements = [Movement]()
             for movement in movements.sorted(by: {
                 // order by most recent log timestamp, ascending. If both are equal (i.e. both are
@@ -90,7 +90,7 @@ extension HomeView {
                     return $0.mostRecentLogTimestamp < $1.mostRecentLogTimestamp
                 }
             }) {
-                if movement.split == split {
+                if movement.category == category {
                     splitMovements.append(movement)
                 }
             }

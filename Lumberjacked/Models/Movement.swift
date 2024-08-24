@@ -10,13 +10,14 @@ import Foundation
 struct Movement: Codable, Hashable, Identifiable  {
     var id: Int
     var name: String
-    var split: String
-    var description: String?
+    var category: String
+    var notes: String?
     var createdAt: Date
     
     // recommendations
     var warmupSets: String?
     var workingSets: String?
+    var repRange: String?
     var rpe: String?
     var restTime: Int? // in seconds
     
@@ -42,15 +43,16 @@ struct Movement: Codable, Hashable, Identifiable  {
     }
     
     static func empty() -> Movement {
-        return Movement(id: 0, name: "", split: "", createdAt: Date.now, movementLogs: [])
+        return Movement(id: 0, name: "", category: "", createdAt: Date.now, movementLogs: [])
     }
     
     struct MovementDTO: Codable {
         var name: String?
-        var split: String?
-        var description: String?
+        var category: String?
+        var notes: String?
         var warmupSets: String?
         var workingSets: String?
+        var repRange: String?
         var rpe: String?
         var restTime: Int?
     }
@@ -58,10 +60,11 @@ struct Movement: Codable, Hashable, Identifiable  {
     var dto: MovementDTO {
         return MovementDTO(
             name: name,
-            split: split,
-            description: description,
+            category: category,
+            notes: notes,
             warmupSets: warmupSets,
             workingSets: workingSets,
+            repRange: repRange,
             rpe: rpe,
             restTime: restTime)
     }

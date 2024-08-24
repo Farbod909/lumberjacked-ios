@@ -12,9 +12,10 @@ struct MovementLog: Codable, Equatable, Hashable, Identifiable {
     var sets: Int?
     var reps: Int?
     var load: String?
+    var notes: String?
     var timestamp: Date?
     
-    var isFullyPopulated: Bool {
+    var requiredFieldsFullyPopulated: Bool {
         return sets != nil && reps != nil && load != nil && load != ""
     }
     
@@ -22,13 +23,11 @@ struct MovementLog: Codable, Equatable, Hashable, Identifiable {
         var sets: Int?
         var reps: Int?
         var load: Decimal?
+        var notes: String?
     }
     
     var dto: MovementLogDTO {
-        if let unwrappedLoad = load {
-            return MovementLogDTO(sets: sets, reps: reps, load: Decimal(string: unwrappedLoad))
-        } else {
-            return MovementLogDTO(sets: sets, reps: reps, load: nil)
-        }
+        return MovementLogDTO(
+            sets: sets, reps: reps, load: Decimal(string: load!) ?? nil, notes: notes)
     }
 }

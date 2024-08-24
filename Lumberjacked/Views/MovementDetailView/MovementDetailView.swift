@@ -17,15 +17,15 @@ struct MovementDetailView: View {
                 .font(.title)
                 .fontWeight(.bold)
             HStack {
-                Text("split")
+                Text("category")
                     .textCase(.uppercase)
                     .font(.headline)
-                Text(viewModel.movement.split)
+                Text(viewModel.movement.category)
                 Spacer()
             }
             
-            if let description = viewModel.movement.description {
-                Text(description)
+            if let notes = viewModel.movement.notes {
+                Text(notes)
             }
             
             if viewModel.movement.hasAnyRecommendations {
@@ -106,6 +106,9 @@ struct RecommendationsView: View {
         }
         if let workingSets = movement.workingSets {
             result.append(Recommendation(name: "Working Sets", value: workingSets))
+        }
+        if let repRange = movement.repRange {
+            result.append(Recommendation(name: "Rep Range", value: repRange))
         }
         if let rpe = movement.rpe {
             result.append(Recommendation(name: "RPE", value: rpe))
@@ -247,6 +250,6 @@ struct NewMovementLogLink: View {
         MovementDetailView(
             viewModel: MovementDetailView.ViewModel(
                 container: ContainerView.ViewModel(),
-                movement: Movement(id: 1, name: "Name", split: "Split", createdAt: Date.now, movementLogs: [])))
+                movement: Movement(id: 1, name: "Name", category: "Category", createdAt: Date.now, movementLogs: [])))
     }
 }
