@@ -238,7 +238,11 @@ struct NewMovementLogLink: View {
     var movement: Movement
     
     var body: some View {
-        NavigationLink(value: MovementAndLog(movement: movement, log: MovementLog())) {
+        NavigationLink(
+            value: MovementAndLog(
+                movement: movement,
+                log: movement.movementLogs.last?.withJustInputFields ?? MovementLog()))
+        {
             Label("New log", systemImage: "plus.square.fill")
         }
 
