@@ -10,16 +10,43 @@ import SwiftUI
 struct LogInputView: View {
     @State var viewModel: ViewModel
     @Environment(\.dismiss) var dismiss
-        
+    
+    @FocusState private var setsFieldFocused: Bool
+    @FocusState private var repsFieldFocused: Bool
+    @FocusState private var loadFieldFocused: Bool
+
     var body: some View {
         Form {
             Section {
                 TextField("Working Sets", value: $viewModel.movementLog.sets, format: .number)
+                    .keyboardType(.numberPad)
+                    .focused($setsFieldFocused)
                 TextField("Reps", value: $viewModel.movementLog.reps, format: .number)
+                    .keyboardType(.numberPad)
+                    .focused($repsFieldFocused)
                 TextField("Load", text: $viewModel.movementLog.load.bound)
+                    .keyboardType(.decimalPad)
+                    .focused($loadFieldFocused)
             }
         }
         .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                if loadFieldFocused {
+                    Button("Done") {
+                        loadFieldFocused = false
+                    }
+                } else {
+                    Button("Next") {
+                        if setsFieldFocused {
+                            repsFieldFocused = true
+                        }
+                        if repsFieldFocused {
+                            loadFieldFocused = true
+                        }
+                    }
+                }
+            }
             if viewModel.toolbarActionLoading {
                 ToolbarItem(placement: .topBarTrailing) {
                     ProgressView()
@@ -28,14 +55,8 @@ struct LogInputView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {
                     Task {
-                        if viewModel.movementLog.id == nil {
-                            guard await viewModel.attemptSaveNewLog() else {
-                                return
-                            }
-                        } else {
-                            guard await viewModel.attemptUpdateLog() else {
-                                return
-                            }
+                        guard await viewModel.formSubmit() else {
+                            return
                         }
                         dismiss()
                     }
@@ -61,5 +82,8 @@ struct LogInputView: View {
                 time: .omitted) ??
             "New Log"
         )
+        .onAppear() {
+            setsFieldFocused = true
+        }
     }
 }

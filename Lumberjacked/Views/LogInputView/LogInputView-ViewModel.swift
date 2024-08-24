@@ -82,5 +82,18 @@ extension LogInputView {
             toolbarActionLoading = false
             return didSucceed
         }
+        
+        func formSubmit() async -> Bool {
+            if movementLog.id == nil {
+                guard await attemptSaveNewLog() else {
+                    return false
+                }
+            } else {
+                guard await attemptUpdateLog() else {
+                    return false
+                }
+            }
+            return true
+        }
     }
 }
