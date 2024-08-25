@@ -49,12 +49,12 @@ struct Movement: Codable, Hashable, Identifiable  {
     struct MovementDTO: Codable {
         var name: String?
         var category: String?
-        var notes: String?
-        var warmupSets: String?
-        var workingSets: String?
-        var repRange: String?
-        var rpe: String?
-        var restTime: Int?
+        @NullCodable var notes: String?
+        @NullCodable var warmupSets: String?
+        @NullCodable var workingSets: String?
+        @NullCodable var repRange: String?
+        @NullCodable var rpe: String?
+        @NullCodable var restTime: Int?
     }
     
     var dto: MovementDTO {

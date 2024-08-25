@@ -23,7 +23,7 @@ struct MovementLog: Codable, Equatable, Hashable, Identifiable {
         var sets: Int?
         var reps: Int?
         var load: Decimal?
-        var notes: String?
+        @NullCodable var notes: String?
     }
     
     var dto: MovementLogDTO {
