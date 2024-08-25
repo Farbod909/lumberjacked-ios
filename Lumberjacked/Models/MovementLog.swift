@@ -31,9 +31,8 @@ struct MovementLog: Codable, Equatable, Hashable, Identifiable {
             sets: sets, reps: reps, load: Decimal(string: load!) ?? nil, notes: notes)
     }
     
-    // Returns a MovementLog instance without ID and timestamp, but rather
-    // just pre-populates input fields.
+    // Returns a MovementLog instance that just pre-populates input fields, except notes.
     var withJustInputFields: MovementLog {
-        return MovementLog(sets: sets, reps: reps, load: load, notes: notes)
+        return MovementLog(sets: sets, reps: reps, load: load)
     }
 }
