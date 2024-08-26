@@ -20,11 +20,11 @@ struct MovementDetailView: View {
                             .textCase(.uppercase)
                             .font(.headline)
                         Text(viewModel.movement.category)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.alternate)
                         Spacer()
                     }
                     .padding(EdgeInsets(top: 4, leading: 0, bottom: 10 , trailing: 0))
-                    .overlay(Divider().background(.secondary), alignment: .bottom)
+                    .overlay(Divider().background(.alternate), alignment: .bottom)
                     
                     if let notes = viewModel.movement.notes {
                         HStack {
@@ -33,12 +33,12 @@ struct MovementDetailView: View {
                                     .textCase(.uppercase)
                                     .font(.headline)
                                 Text(notes)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.alternate)
                             }
                             Spacer()
                         }
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 10 , trailing: 0))
-                        .overlay(Divider().background(.secondary), alignment: .bottom)
+                        .overlay(Divider().background(.alternate), alignment: .bottom)
                     }
                     
                     if viewModel.movement.hasAnyRecommendations {
@@ -47,7 +47,7 @@ struct MovementDetailView: View {
                             Spacer()
                         }
                             .padding(EdgeInsets(top: 4, leading: 0, bottom: 10 , trailing: 0))
-                            .overlay(Divider().background(.secondary), alignment: .bottom)
+                            .overlay(Divider().background(.alternate), alignment: .bottom)
                     }
                 }
                 
@@ -167,7 +167,7 @@ struct RecommendationsView: View {
                     .padding(0)
                 }
             }
-            .foregroundColor(.secondary)
+            .foregroundColor(.alternate)
         }
     }
 }

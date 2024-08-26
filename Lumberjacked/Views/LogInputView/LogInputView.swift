@@ -20,7 +20,7 @@ struct LogInputView: View {
                       text: $viewModel.movementLog.notes.bound,
                       prompt: Text("Notes").foregroundStyle(Color.secondary))
                 .padding()
-                .background(Color.init(uiColor: UIColor.systemGray3))
+                .background(Color.init(.systemGray6))
                 .foregroundColor(Color.primary)
                 .clipShape(
                     RoundedRectangle(cornerRadius: 100)
@@ -114,7 +114,7 @@ struct CustomIntStepper : View {
             .disabled(value == maxValue)
         }
         .padding(2)
-        .background(Color.init(uiColor: UIColor.systemGray3))
+        .background(Color.init(.systemGray6))
         .foregroundStyle(Color.primary)
         .font(.title2)
         .clipShape(
@@ -171,7 +171,7 @@ struct CustomDoubleStepper : View {
             .disabled(Double(value) == maxValue)
         }
         .padding(2)
-        .background(Color.init(uiColor: UIColor.systemGray3))
+        .background(Color.init(.systemGray6))
         .foregroundStyle(Color.primary)
         .font(.title2)
         .clipShape(
