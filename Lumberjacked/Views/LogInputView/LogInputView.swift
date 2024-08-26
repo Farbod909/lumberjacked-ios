@@ -120,6 +120,13 @@ struct CustomIntStepper : View {
         .clipShape(
             RoundedRectangle(cornerRadius: 100)
         )
+        .sensoryFeedback(trigger: value ?? 0) { oldValue, newValue in
+            if oldValue > newValue {
+                return .decrease
+            } else {
+                return .increase
+            }
+        }
     }
 }
 
@@ -177,6 +184,13 @@ struct CustomDoubleStepper : View {
         .clipShape(
             RoundedRectangle(cornerRadius: 100)
         )
+        .sensoryFeedback(trigger: value) { oldValue, newValue in
+            if Double(oldValue) ?? 0 > Double(newValue) ?? 0 {
+                return .decrease
+            } else {
+                return .increase
+            }
+        }
     }
 }
 
