@@ -17,5 +17,6 @@ struct ContainerView: View {
         .alert(
             viewModel.errorAlertItem,
             isPresented: $viewModel.errorAlertItemIsPresented)
+        .preferredColorScheme(.dark)
     }
 }

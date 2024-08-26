@@ -16,10 +16,12 @@ struct LogInputView: View {
             CustomIntStepper(label: "Sets", value: $viewModel.movementLog.sets, minValue: 0, maxValue: 100)
             CustomIntStepper(label: "Reps", value: $viewModel.movementLog.reps, minValue: 0, maxValue: 100)
             CustomDoubleStepper(label: "Load", value: $viewModel.movementLog.load.bound, minValue: -1000, maxValue: 1000, increment: 2.5)
-            TextField("", text: $viewModel.movementLog.notes.bound, prompt: Text("Notes").foregroundStyle(Color.gray))
+            TextField("",
+                      text: $viewModel.movementLog.notes.bound,
+                      prompt: Text("Notes").foregroundStyle(Color.secondary))
                 .padding()
-                .background(Color.init(uiColor: UIColor(red: 73/255, green: 73/255, blue: 73/255, alpha: 1.0)))
-                .foregroundColor(Color.white)
+                .background(Color.init(uiColor: UIColor.systemGray3))
+                .foregroundColor(Color.primary)
                 .clipShape(
                     RoundedRectangle(cornerRadius: 100)
                 )
@@ -83,21 +85,19 @@ struct CustomIntStepper : View {
                 }
             } label: {
                 Image(systemName: "minus")
+                    .padding()
             }
-            .padding(EdgeInsets(top: 27, leading: 20, bottom: 27, trailing: 16))
-            .background(Color.init(uiColor: UIColor(red: 53/255, green: 53/255, blue: 53/255, alpha: 1.0)))
-            .foregroundStyle(Color.white)
             .disabled(value == minValue)
             
             VStack {
                 TextField("", value: $value, format: .number)
                     .keyboardType(.numberPad)
                     .multilineTextAlignment(.center)
+                    .font(.title2)
                 Text(label)
                     .font(.caption)
                     .textCase(.uppercase)
             }
-            .foregroundStyle(Color.white)
 
             Button {
                 if value != nil {
@@ -109,13 +109,14 @@ struct CustomIntStepper : View {
                 }
             } label: {
                 Image(systemName: "plus")
+                    .padding()
             }
-            .padding(EdgeInsets(top: 22, leading: 16, bottom: 22, trailing: 20))
-            .background(Color.init(uiColor: UIColor(red: 53/255, green: 53/255, blue: 53/255, alpha: 1.0)))
-            .foregroundStyle(Color.white)
             .disabled(value == maxValue)
         }
-        .background(Color.init(uiColor: UIColor(red: 73/255, green: 73/255, blue: 73/255, alpha: 1.0)))
+        .padding(2)
+        .background(Color.init(uiColor: UIColor.systemGray3))
+        .foregroundStyle(Color.primary)
+        .font(.title2)
         .clipShape(
             RoundedRectangle(cornerRadius: 100)
         )
@@ -141,21 +142,19 @@ struct CustomDoubleStepper : View {
                 }
             } label: {
                 Image(systemName: "minus")
+                    .padding()
             }
-            .padding(EdgeInsets(top: 27, leading: 20, bottom: 27, trailing: 16))
-            .background(Color.init(uiColor: UIColor(red: 53/255, green: 53/255, blue: 53/255, alpha: 1.0)))
-            .foregroundStyle(Color.white)
             .disabled(Double(value) == minValue)
             
             VStack {
                 TextField("", text: $value) // no placeholder
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.center)
+                    .font(.title2)
                 Text(label)
                     .font(.caption)
                     .textCase(.uppercase)
             }
-            .foregroundStyle(Color.white)
 
             Button {
                 if let valueAsDouble = Double(value) {
@@ -167,13 +166,14 @@ struct CustomDoubleStepper : View {
                 }
             } label: {
                 Image(systemName: "plus")
+                    .padding()
             }
-            .padding(EdgeInsets(top: 22, leading: 16, bottom: 22, trailing: 20))
-            .background(Color.init(uiColor: UIColor(red: 53/255, green: 53/255, blue: 53/255, alpha: 1.0)))
-            .foregroundStyle(Color.white)
             .disabled(Double(value) == maxValue)
         }
-        .background(Color.init(uiColor: UIColor(red: 73/255, green: 73/255, blue: 73/255, alpha: 1.0)))
+        .padding(2)
+        .background(Color.init(uiColor: UIColor.systemGray3))
+        .foregroundStyle(Color.primary)
+        .font(.title2)
         .clipShape(
             RoundedRectangle(cornerRadius: 100)
         )
