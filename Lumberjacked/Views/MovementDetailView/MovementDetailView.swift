@@ -12,36 +12,57 @@ struct MovementDetailView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(viewModel.movement.name)
-                .font(.title)
-                .fontWeight(.bold)
-            HStack {
-                Text("category")
-                    .textCase(.uppercase)
-                    .font(.headline)
-                Text(viewModel.movement.category)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("category")
+                            .textCase(.uppercase)
+                            .font(.headline)
+                        Text(viewModel.movement.category)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 10 , trailing: 0))
+                    .overlay(Divider().background(.secondary), alignment: .bottom)
+                    
+                    if let notes = viewModel.movement.notes {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("Notes")
+                                    .textCase(.uppercase)
+                                    .font(.headline)
+                                Text(notes)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                        }
+                        .padding(EdgeInsets(top: 4, leading: 0, bottom: 10 , trailing: 0))
+                        .overlay(Divider().background(.secondary), alignment: .bottom)
+                    }
+                    
+                    if viewModel.movement.hasAnyRecommendations {
+                        HStack {
+                            RecommendationsView(movement: viewModel.movement)
+                            Spacer()
+                        }
+                            .padding(EdgeInsets(top: 4, leading: 0, bottom: 10 , trailing: 0))
+                            .overlay(Divider().background(.secondary), alignment: .bottom)
+                    }
+                }
+                
+                if !viewModel.movement.movementLogs.isEmpty {
+                    LogListView(movement: viewModel.movement)
+                } else {
+                    Spacer()
+                    NewMovementLogLink(movement: viewModel.movement)
+                        .frame(maxWidth: .infinity)
+                    Spacer()
+                }
                 Spacer()
             }
-            
-            if let notes = viewModel.movement.notes {
-                Text(notes)
-            }
-            
-            if viewModel.movement.hasAnyRecommendations {
-                RecommendationsView(movement: viewModel.movement)
-            }
-            
-            if !viewModel.movement.movementLogs.isEmpty {
-                LogListView(movement: viewModel.movement)
-            } else {
-                Spacer()
-                NewMovementLogLink(movement: viewModel.movement)
-                    .frame(maxWidth: .infinity)
-                Spacer()
-            }
-            Spacer()
         }
+        .navigationTitle(viewModel.movement.name)
         .task {
             await viewModel.attemptLoadMovementDetail(id: viewModel.movement.id)
         }
@@ -133,9 +154,9 @@ struct RecommendationsView: View {
             Text("Recommendations")
                 .textCase(.uppercase)
                 .font(.headline)
-            HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 ForEach(recommendations, id: \.self) { recommendation in
-                    VStack {
+                    HStack {
                         Text(recommendation.name)
                             .textCase(.uppercase)
                             .font(.subheadline)
@@ -143,14 +164,10 @@ struct RecommendationsView: View {
                             .fontWeight(.semibold)
                         Text(recommendation.value)
                     }
-                    .padding(8)
-                    .background(Color.init(uiColor: .systemGray6))
-                    .cornerRadius(5)
-                    if recommendation != recommendations.last {
-                        Spacer(minLength: 1)
-                    }
+                    .padding(0)
                 }
             }
+            .foregroundColor(.secondary)
         }
     }
 }
@@ -182,20 +199,18 @@ struct LogListView: View {
                     .frame(width: 60)
                     .padding(.trailing, 8)
             }
-            ScrollView {
-                LazyVStack {
-                    ForEach(
-                        movement.movementLogs.sorted(
-                            by: { $0.timestamp! > $1.timestamp! }
-                        ),
-                        id: \.self
-                    ) { log in
-                        LogItem(movement: movement, log: log)
-                    }
+            LazyVStack {
+                ForEach(
+                    movement.movementLogs.sorted(
+                        by: { $0.timestamp! > $1.timestamp! }
+                    ),
+                    id: \.self
+                ) { log in
+                    LogItem(movement: movement, log: log)
                 }
             }
         }
-
+        .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
     }
 }
 
@@ -254,6 +269,22 @@ struct NewMovementLogLink: View {
         MovementDetailView(
             viewModel: MovementDetailView.ViewModel(
                 container: ContainerView.ViewModel(),
-                movement: Movement(id: 1, name: "Name", category: "Category", createdAt: Date.now, movementLogs: [])))
+                movement: Movement(
+                    id: 1,
+                    name: "Name",
+                    category: "Category",
+                    notes: "Example notes.",
+                    createdAt: Date.now,
+                    warmupSets: "1-2",
+                    workingSets: "2",
+                    repRange: "12-15",
+                    rpe: "9-10",
+                    restTime: 140,
+                    movementLogs: [
+                        MovementLog(sets: 3, reps: 12, load: "73.5", timestamp: Date.now),
+                        MovementLog(sets: 3, reps: 12, load: "73.5", timestamp: Date.now),
+                        MovementLog(sets: 3, reps: 12, load: "73.5", timestamp: Date.now),
+                        MovementLog(sets: 3, reps: 12, load: "73.5", timestamp: Date.now),
+                    ])))
     }
 }
