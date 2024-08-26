@@ -15,7 +15,7 @@ struct LogInputView: View {
         VStack {
             CustomIntStepper(label: "Sets", value: $viewModel.movementLog.sets, minValue: 0, maxValue: 100)
             CustomIntStepper(label: "Reps", value: $viewModel.movementLog.reps, minValue: 0, maxValue: 100)
-            CustomDoubleStepper(label: "Load", value: $viewModel.movementLog.load.bound, minValue: -1000, maxValue: 1000, increment: 2.5)
+            CustomDoubleStepper(label: "Load", value: $viewModel.movementLog.load.bound, minValue: -1000, maxValue: 1000, increment: 5)
             TextField("",
                       text: $viewModel.movementLog.notes.bound,
                       prompt: Text("Notes").foregroundStyle(Color.secondary))
