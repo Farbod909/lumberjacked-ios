@@ -27,7 +27,7 @@ struct MovementInputView: View {
                     stickyText: "Notes",
                     text: $viewModel.movement.notes.bound)
             }
-            Section("Recommendations") {
+            Section("Recommendations (Optional)") {
                 MovementInputTextFieldView(
                     placeholderText: "Warmup sets",
                     stickyText: "Warmup sets",
