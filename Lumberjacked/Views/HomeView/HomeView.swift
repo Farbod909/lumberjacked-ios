@@ -72,26 +72,7 @@ struct MovementsListView: View {
     var viewModel: HomeView.ViewModel
     
     var body: some View {
-        List {
-//            ForEach(viewModel.getAllCategories(), id: \.self) { category in
-//                Section() {
-//                    ForEach(viewModel.getMovements(category: category)) { movement in
-//                        MovementsRowView(movement: movement)
-//                    }
-//                } header: {
-//                    MovementsCategoryHeaderView(category: category)
-//                }
-//            }
-            
-            
-//            ForEach(viewModel.getUniqueLastLoggedDayVariations(), id: \.self) { lastLoggedDay in
-//                Section() {
-//                    ForEach(viewModel.getMovements(lastLoggedDay: lastLoggedDay)) { movement in
-//                        MovementsRowView(movement: movement)
-//                    }
-//                }
-//            }
-            
+        List {            
             ForEach(viewModel.getUniqueLastLoggedDayBeforeBufferPeriodValues(), id: \.self)
             { lastLoggedDayBeforeBufferPeriod in
                 Section(viewModel.getSectionName(lastLoggedDayBeforeBufferPeriod)) {
