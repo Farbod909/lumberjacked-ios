@@ -10,6 +10,8 @@ import SwiftUI
 extension HomeView {
     @Observable
     class ViewModel: BaseViewModel {
+        static let bufferPeriod = 60 * 60 * 2 // 2 hours
+        
         var movements = [Movement]()
         
         var isShowingLoginSheet = false
@@ -22,7 +24,7 @@ extension HomeView {
         /**
          Get all unique values of lastLoggedDay, ordered by most recent.
          */
-        func getUniqueLastLoggedDays() -> [String] {
+        func getUniqueLastLoggedDayValues() -> [String] {
             var uniqueLastLoggedDays = Set<String>()
             var orderedLastLoggedDays = Array<String>()
             for movement in movements.sorted(by: {
@@ -35,6 +37,24 @@ extension HomeView {
             }
             return orderedLastLoggedDays
         }
+        
+        /**
+         Get all unique values of lastLoggedDayBeforeBufferPeriod, ordered by most last logged timestamp.
+         */
+        func getUniqueLastLoggedDayBeforeBufferPeriodValues() -> [String] {
+            var uniqueSet = Set<String>()
+            var orderedSet = Array<String>()
+            for movement in movements.sorted(by: {
+                $0.mostRecentLogTimestamp >= $1.mostRecentLogTimestamp
+            }) {
+                if !uniqueSet.contains(movement.lastLoggedDayBeforeBufferPeriod(Self.bufferPeriod)) {
+                    orderedSet.append(movement.lastLoggedDayBeforeBufferPeriod(Self.bufferPeriod))
+                    uniqueSet.insert(movement.lastLoggedDayBeforeBufferPeriod(Self.bufferPeriod))
+                }
+            }
+            return orderedSet
+        }
+
         
         /**
          Get all unique categories, ordered by most recent log timestamp.
@@ -74,6 +94,29 @@ extension HomeView {
             }
             return splitMovements
         }
+        
+        /**
+         Get all movements grouped by last day before today that they were logged, ordered by most recent log
+         timestamp.
+         */
+        func getMovements(lastLoggedDayBeforeBufferPeriod: String) -> [Movement] {
+            var splitMovements = [Movement]()
+            for movement in movements.sorted(by: {
+                // order by most recent log timestamp, ascending. If both are equal (i.e. both are
+                // not present), then order by creation timestamp, ascending.
+                if $0.mostRecentLogTimestamp == $1.mostRecentLogTimestamp {
+                    return $0.createdAt <= $1.createdAt
+                } else {
+                    return $0.mostRecentLogTimestamp < $1.mostRecentLogTimestamp
+                }
+            }) {
+                if movement.lastLoggedDayBeforeBufferPeriod(Self.bufferPeriod) == lastLoggedDayBeforeBufferPeriod {
+                    splitMovements.append(movement)
+                }
+            }
+            return splitMovements
+        }
+
                 
         /**
          Get all movements for a given category, ordered by most recent log
@@ -95,6 +138,31 @@ extension HomeView {
                 }
             }
             return splitMovements
+        }
+        
+        func getSectionName(_ lastLoggedDayBeforeBufferPeriod: String) -> String {
+            if lastLoggedDayBeforeBufferPeriod.isEmpty {
+                return "New"
+            }
+            var name = lastLoggedDayBeforeBufferPeriod
+            for movement in movements {
+                if movement.lastLoggedDayBeforeBufferPeriod(Self.bufferPeriod) == lastLoggedDayBeforeBufferPeriod 
+                    && movement.mostRecentLogTimestamp.distance(to: Date.now) < TimeInterval(Self.bufferPeriod) {
+                    name = "In Progress"
+                }
+            }
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            dateFormatter.timeZone = TimeZone.current
+            if let date = dateFormatter.date(from: lastLoggedDayBeforeBufferPeriod) {
+                if Calendar.current.isDateInToday(date) {
+                    return "Today"
+                }
+                if Calendar.current.isDateInYesterday(date) {
+                    return "Yesterday"
+                }
+            }
+            return name
         }
 
         func attemptLoadAllMovements() async {

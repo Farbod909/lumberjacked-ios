@@ -32,6 +32,23 @@ struct Movement: Codable, Hashable, Identifiable  {
         }
     }
     
+    func lastLoggedDayBeforeBufferPeriod(_ bufferPeriod: Int) -> String {
+        if movementLogs.isEmpty {
+            return ""
+        } else {
+            var lastLoggedDayBeforeBufferPeriodIndex = 0
+            if (movementLogs[0].timestamp?.distance(to: Date.now))! <= TimeInterval(bufferPeriod) &&
+                movementLogs.count > 1 {
+                lastLoggedDayBeforeBufferPeriodIndex = 1
+            }
+            let dateComponents = Calendar.current.dateComponents(
+                [.day, .year, .month],
+                from: movementLogs[lastLoggedDayBeforeBufferPeriodIndex].timestamp!)
+            return "\(dateComponents.year!)-\(dateComponents.month!)-\(dateComponents.day!)"
+        }
+    }
+
+    
     var movementLogs: [MovementLog]
     
     var hasAnyRecommendations: Bool {

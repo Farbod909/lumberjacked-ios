@@ -82,13 +82,27 @@ struct MovementsListView: View {
 //                    MovementsCategoryHeaderView(category: category)
 //                }
 //            }
-            ForEach(viewModel.getUniqueLastLoggedDays(), id: \.self) { lastLoggedDay in
-                Section() {
-                    ForEach(viewModel.getMovements(lastLoggedDay: lastLoggedDay)) { movement in
+            
+            
+//            ForEach(viewModel.getUniqueLastLoggedDayVariations(), id: \.self) { lastLoggedDay in
+//                Section() {
+//                    ForEach(viewModel.getMovements(lastLoggedDay: lastLoggedDay)) { movement in
+//                        MovementsRowView(movement: movement)
+//                    }
+//                }
+//            }
+            
+            ForEach(viewModel.getUniqueLastLoggedDayBeforeBufferPeriodValues(), id: \.self)
+            { lastLoggedDayBeforeBufferPeriod in
+                Section(viewModel.getSectionName(lastLoggedDayBeforeBufferPeriod)) {
+                    ForEach(viewModel.getMovements(
+                        lastLoggedDayBeforeBufferPeriod: lastLoggedDayBeforeBufferPeriod))
+                    { movement in
                         MovementsRowView(movement: movement)
                     }
                 }
             }
+
         }
     }
 }
