@@ -52,22 +52,24 @@ struct HomeView: View {
                         Text($0)
                     }
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                NewMovementLink(viewModel: viewModel)
-            }
-            ToolbarItem(placement: .topBarLeading) {
                 if !viewModel.isLoadingLogout {
                     Button {
                         Task {
                             await viewModel.attemptLogout()
                         }
                     } label: {
-                        Text("Log out")
+                        Label("Log Out", systemImage: "rectangle.portrait.and.arrow.right")
                     }
                 } else {
                     ProgressView()
                 }
+
+            }
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if viewModel.isLoadingLogout {
+                    ProgressView()
+                }
+                NewMovementLink(viewModel: viewModel)
             }
         }
         .sheet(
