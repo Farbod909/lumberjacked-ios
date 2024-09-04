@@ -9,7 +9,12 @@ import SwiftUI
 
 struct HomeView: View {
     @State var viewModel: ViewModel
-        
+    
+    @AppStorage("homeSelectedViewMode") var selectedViewMode = "Minimal"
+    @AppStorage("homeSelectedGroupBy") var selectedGroupBy = "Date"
+    let possibleViewModes = ["Minimal", "Compact", "Full"]
+    let possibeGroupings = ["Date", "Category"]
+
     var body: some View {
         ZStack {
             if viewModel.movements.isEmpty {
@@ -21,7 +26,10 @@ struct HomeView: View {
                     NewMovementLink(viewModel: viewModel)
                 }
             } else {
-                MovementsListView(viewModel: viewModel)
+                MovementsListView(
+                    viewModel: viewModel,
+                    selectedViewMode: selectedViewMode,
+                    selectedGroupBy: selectedGroupBy)
             }
         }
         .task(id: viewModel.isLoggedIn) {
@@ -29,6 +37,22 @@ struct HomeView: View {
             await viewModel.attemptLoadAllMovements()
         }
         .toolbar {
+            ToolbarItemGroup(placement: .secondaryAction) {
+                Picker("View Mode",
+                       systemImage: "list.bullet",
+                       selection: $selectedViewMode) {
+                    ForEach(possibleViewModes, id: \.self) {
+                        Text($0)
+                    }
+                }
+                Picker("Group By",
+                       systemImage: "rectangle.3.group",
+                       selection: $selectedGroupBy) {
+                    ForEach(possibeGroupings, id: \.self) {
+                        Text($0)
+                    }
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 NewMovementLink(viewModel: viewModel)
             }
@@ -70,66 +94,157 @@ struct HomeView: View {
 
 struct MovementsListView: View {
     var viewModel: HomeView.ViewModel
+    var selectedViewMode: String
+    var selectedGroupBy: String
     
     var body: some View {
-        List {            
-            ForEach(viewModel.getUniqueLastLoggedDayBeforeBufferPeriodValues(), id: \.self)
-            { lastLoggedDayBeforeBufferPeriod in
-                Section(viewModel.getSectionName(lastLoggedDayBeforeBufferPeriod)) {
-                    ForEach(viewModel.getMovements(
-                        lastLoggedDayBeforeBufferPeriod: lastLoggedDayBeforeBufferPeriod))
-                    { movement in
-                        MovementsRowView(movement: movement)
+        if selectedGroupBy == "Date" {
+            List {
+                ForEach(viewModel.getUniqueLastLoggedDayBeforeBufferPeriodValues(), id: \.self)
+                { lastLoggedDayBeforeBufferPeriod in
+                    Section {
+                        ForEach(viewModel.getMovements(
+                            lastLoggedDayBeforeBufferPeriod: lastLoggedDayBeforeBufferPeriod))
+                        { movement in
+                            MovementsRowView(
+                                movement: movement,
+                                selectedViewMode: selectedViewMode)
+                        }
+                    } header: {
+                        MovementsListHeaderView(
+                            headerTitle: viewModel.getSectionName(lastLoggedDayBeforeBufferPeriod))
+                    }
+                }
+                
+            }
+        }
+        else if selectedGroupBy == "Category" {
+            List {
+                ForEach(viewModel.getAllCategories(), id: \.self) { category in
+                    Section() {
+                        ForEach(viewModel.getMovements(category: category)) { movement in
+                            MovementsRowView(movement: movement, selectedViewMode: selectedViewMode)
+                        }
+                    } header: {
+                        MovementsListHeaderView(headerTitle: category)
                     }
                 }
             }
-
+        }
+        else {
+            Text("Cannot group by \(selectedGroupBy).")
         }
     }
 }
 
 struct MovementsRowView: View {
     var movement: Movement
+    var selectedViewMode: String
     
     var body: some View {
         HStack {
-            Text(movement.name)
-            Spacer()
-            if !movement.movementLogs.isEmpty {
-                if let reps = movement.movementLogs[0].reps {
-                    Text(reps.formatted()).frame(minWidth: 36)
-                }
-                Divider()
-                if let load = movement.movementLogs[0].load {
-                    Text(load).frame(minWidth: 36)
-                }
+            if selectedViewMode == "Full" {
+                MovementsRowFull(movement: movement)
             }
+            else if selectedViewMode == "Compact" {
+                MovementsRowCompact(movement: movement)
+            } else if selectedViewMode == "Minimal" {
+                MovementsRowMinimal(movement: movement)
+            } else {
+                MovementsRowMinimal(movement: movement)
+            }
+            Spacer()
             NavigationLink(value: movement) { }
                 .frame(maxWidth: 6)
         }
     }
 }
 
-struct MovementsCategoryHeaderView: View {
-    var category: String
+struct MovementsRowFull: View {
+    var movement: Movement
+
+    var body: some View {
+        VStack {
+            HStack {
+                Text(movement.name)
+                Spacer()
+                Text(movement.category)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .textCase(.uppercase)
+            }
+            .padding(EdgeInsets(top: 0, leading: 0, bottom: 4, trailing: 0))
+            
+            HStack {
+                Text("Latest Load")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .textCase(.uppercase)
+                    .fontWidth(.condensed)
+                Text(movement.latestLoad)
+                    .font(.caption)
+                    .fontWeight(.thin)
+
+                Spacer()
+                
+                Text("Latest Reps")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .textCase(.uppercase)
+                    .fontWidth(.condensed)
+                Text(movement.latestReps)
+                    .font(.caption)
+                    .fontWeight(.thin)
+
+                Spacer()
+                
+                Text("Rep Range")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .textCase(.uppercase)
+                    .fontWidth(.condensed)
+                Text(movement.repRange ?? "N/A")
+                    .font(.caption)
+                    .fontWeight(.thin)
+            }
+        }
+    }
+}
+
+struct MovementsRowCompact: View {
+    var movement: Movement
+
+    var body: some View {
+        HStack {
+            Text(movement.name)
+            Spacer()
+            Text("\(movement.latestLoad) × \(movement.latestReps)")
+                .font(.caption)
+                .fontWeight(.bold)
+            Text("(\(movement.repRange ?? "N/A"))")
+                .font(.caption)
+        }
+    }
+}
+
+struct MovementsRowMinimal: View {
+    var movement: Movement
+
+    var body: some View {
+        Text(movement.name)
+    }
+}
+
+
+struct MovementsListHeaderView: View {
+    var headerTitle: String
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(category)
-                .font(.title)
-                .textCase(nil)
-                .bold()
-                .padding(.bottom, 2)
-            HStack {
-                Text("Name")
-                Spacer()
-                Text("Most recent")
-                Text("Reps")
-                Text("+")
-                Text("Load").padding(.trailing, 22)
-            }
-            .fontWidth(.condensed)
-        }
+        Text(headerTitle)
+            .font(.title)
+            .textCase(nil)
+            .bold()
+            .padding(.bottom, 2)
     }
 }
 

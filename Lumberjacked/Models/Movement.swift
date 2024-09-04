@@ -32,6 +32,26 @@ struct Movement: Codable, Hashable, Identifiable  {
         }
     }
     
+    var latestLoad: String {
+        if movementLogs.isEmpty {
+            return "N/A"
+        }
+        
+        return movementLogs[0].load ?? "N/A"
+    }
+    
+    var latestReps: String {
+        if movementLogs.isEmpty {
+            return "N/A"
+        }
+        
+        if let reps = movementLogs[0].reps {
+            return String(reps)
+        }
+        
+        return "N/A"
+    }
+    
     func lastLoggedDayBeforeBufferPeriod(_ bufferPeriod: Int) -> String {
         if movementLogs.isEmpty {
             return ""
