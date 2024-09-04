@@ -101,40 +101,58 @@ struct MovementsListView: View {
     
     var body: some View {
         if selectedGroupBy == "Date" {
-            List {
-                ForEach(viewModel.getUniqueLastLoggedDayBeforeBufferPeriodValues(), id: \.self)
-                { lastLoggedDayBeforeBufferPeriod in
-                    Section {
-                        ForEach(viewModel.getMovements(
-                            lastLoggedDayBeforeBufferPeriod: lastLoggedDayBeforeBufferPeriod))
-                        { movement in
-                            MovementsRowView(
-                                movement: movement,
-                                selectedViewMode: selectedViewMode)
-                        }
-                    } header: {
-                        MovementsListHeaderView(
-                            headerTitle: viewModel.getSectionName(lastLoggedDayBeforeBufferPeriod))
-                    }
-                }
-                
-            }
+            MovementsListByDateView(viewModel: viewModel, selectedViewMode: selectedViewMode)
         }
         else if selectedGroupBy == "Category" {
-            List {
-                ForEach(viewModel.getAllCategories(), id: \.self) { category in
-                    Section() {
-                        ForEach(viewModel.getMovements(category: category)) { movement in
-                            MovementsRowView(movement: movement, selectedViewMode: selectedViewMode)
-                        }
-                    } header: {
-                        MovementsListHeaderView(headerTitle: category)
-                    }
-                }
-            }
+            MovementsListByCategoryView(viewModel: viewModel, selectedViewMode: selectedViewMode)
         }
         else {
             Text("Cannot group by \(selectedGroupBy).")
+        }
+    }
+}
+
+struct MovementsListByDateView: View {
+    var viewModel: HomeView.ViewModel
+    var selectedViewMode: String
+
+    var body: some View {
+        List {
+            ForEach(viewModel.getUniqueLastLoggedDayBeforeBufferPeriodValues(), id: \.self)
+            { lastLoggedDayBeforeBufferPeriod in
+                Section {
+                    ForEach(viewModel.getMovements(
+                        lastLoggedDayBeforeBufferPeriod: lastLoggedDayBeforeBufferPeriod))
+                    { movement in
+                        MovementsRowView(
+                            movement: movement,
+                            selectedViewMode: selectedViewMode)
+                    }
+                } header: {
+                    MovementsListHeaderView(
+                        headerTitle: viewModel.getSectionName(lastLoggedDayBeforeBufferPeriod))
+                }
+            }
+            
+        }
+    }
+}
+
+struct MovementsListByCategoryView: View {
+    var viewModel: HomeView.ViewModel
+    var selectedViewMode: String
+
+    var body: some View {
+        List {
+            ForEach(viewModel.getAllCategories(), id: \.self) { category in
+                Section() {
+                    ForEach(viewModel.getMovements(category: category)) { movement in
+                        MovementsRowView(movement: movement, selectedViewMode: selectedViewMode)
+                    }
+                } header: {
+                    MovementsListHeaderView(headerTitle: category)
+                }
+            }
         }
     }
 }
