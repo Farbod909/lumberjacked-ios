@@ -256,7 +256,9 @@ struct NewMovementLogLink: View {
         NavigationLink(
             value: MovementAndLog(
                 movement: movement,
-                log: movement.movementLogs.last?.withJustInputFields ?? MovementLog(sets: 0, reps: 0, load: "0")))
+                log: movement.movementLogs.sorted(by: {
+                    $0.timestamp ?? .distantPast < $1.timestamp ?? .distantPast
+                }).last?.withJustInputFields ?? MovementLog(sets: 0, reps: 0, load: "0")))
         {
             Label("New log", systemImage: "plus.square.fill")
         }
