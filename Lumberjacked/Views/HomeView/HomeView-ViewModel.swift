@@ -14,6 +14,17 @@ extension HomeView {
                 
         var movements = [Movement]()
         
+        var searchText = ""
+        var searchIsPresented = false
+        
+        var searchResults: [Movement] {
+            if searchText.isEmpty {
+                return movements
+            } else {
+                return movements.filter { $0.name.contains(searchText) }
+            }
+        }
+        
         var dateSections: [Date: [Movement]] {
             var sections: [Date: [Movement]] = [:]
             for movement in movements {

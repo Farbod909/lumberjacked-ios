@@ -82,6 +82,7 @@ struct HomeView: View {
                     viewModel: LoginSignupView.ViewModel(
                         container: viewModel.container))
             })
+        .searchable(text: $viewModel.searchText, isPresented: $viewModel.searchIsPresented)
         .onAppear() {
             viewModel.showLoginPageIfNotLoggedIn()
         }
@@ -100,14 +101,18 @@ struct MovementsListView: View {
     var selectedGroupBy: String
     
     var body: some View {
-        if selectedGroupBy == "Date" {
-            MovementsListByDateView(viewModel: viewModel, selectedViewMode: selectedViewMode)
-        }
-        else if selectedGroupBy == "Category" {
-            MovementsListByCategoryView(viewModel: viewModel, selectedViewMode: selectedViewMode)
-        }
-        else {
-            Text("Cannot group by \(selectedGroupBy).")
+        if viewModel.searchIsPresented {
+            MovementsListSearchView(viewModel: viewModel, selectedViewMode: selectedViewMode)
+        } else {
+            if selectedGroupBy == "Date" {
+                MovementsListByDateView(viewModel: viewModel, selectedViewMode: selectedViewMode)
+            }
+            else if selectedGroupBy == "Category" {
+                MovementsListByCategoryView(viewModel: viewModel, selectedViewMode: selectedViewMode)
+            }
+            else {
+                Text("Cannot group by \(selectedGroupBy).")
+            }
         }
     }
 }
@@ -194,6 +199,19 @@ struct MovementsListByCategoryView: View {
                 } header: {
                     MovementsListHeaderView(headerTitle: category)
                 }
+            }
+        }
+    }
+}
+
+struct MovementsListSearchView: View {
+    var viewModel: HomeView.ViewModel
+    var selectedViewMode: String
+    
+    var body: some View {
+        List {
+            ForEach(viewModel.searchResults, id: \.self) { movement in
+                MovementsRowView(movement: movement, selectedViewMode: selectedViewMode)
             }
         }
     }
