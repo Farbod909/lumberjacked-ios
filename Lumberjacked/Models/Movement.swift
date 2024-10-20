@@ -52,21 +52,43 @@ struct Movement: Codable, Hashable, Identifiable  {
         return "N/A"
     }
     
-    func lastLoggedDayBeforeBufferPeriod(_ bufferPeriod: Int) -> String {
-        if movementLogs.isEmpty {
-            return ""
-        } else {
-            var lastLoggedDayBeforeBufferPeriodIndex = 0
-            if (movementLogs[0].timestamp?.distance(to: Date.now))! <= TimeInterval(bufferPeriod) &&
-                movementLogs.count > 1 {
-                lastLoggedDayBeforeBufferPeriodIndex = 1
-            }
-            let dateComponents = Calendar.current.dateComponents(
-                [.day, .year, .month],
-                from: movementLogs[lastLoggedDayBeforeBufferPeriodIndex].timestamp!)
-            return "\(dateComponents.year!)-\(dateComponents.month!)-\(dateComponents.day!)"
-        }
+    func isInProgress(_ bufferPeriod: Int) -> Bool {
+        return mostRecentLogTimestamp.distance(to: Date.now).magnitude <= TimeInterval(bufferPeriod)
     }
+    
+    func lastLoggedDayBeforeBufferPeriod(_ bufferPeriod: Int) -> String {
+        var lastLoggedDayBeforeBufferPeriodIndex = 0
+        while true {
+            if !movementLogs.indices.contains(lastLoggedDayBeforeBufferPeriodIndex) {
+                return ""
+            }
+            if (movementLogs[lastLoggedDayBeforeBufferPeriodIndex].timestamp?.distance(to: Date.now))! <= TimeInterval(bufferPeriod) {
+                lastLoggedDayBeforeBufferPeriodIndex += 1
+                continue
+            }
+            break
+        }
+        let dateComponents = Calendar.current.dateComponents(
+            [.day, .year, .month],
+            from: movementLogs[lastLoggedDayBeforeBufferPeriodIndex].timestamp!)
+        return "\(dateComponents.year!)-\(dateComponents.month!)-\(dateComponents.day!)"
+    }
+    
+    func mostRecentLogTimestampBeforeBufferPeriod(_ bufferPeriod: Int) -> Date? {
+        var mostRecentLogTimestampBufferPeriodIndex = 0
+        while true {
+            if !movementLogs.indices.contains(mostRecentLogTimestampBufferPeriodIndex) {
+                return nil
+            }
+            if (movementLogs[mostRecentLogTimestampBufferPeriodIndex].timestamp?.distance(to: Date.now))! <= TimeInterval(bufferPeriod) {
+                mostRecentLogTimestampBufferPeriodIndex += 1
+                continue
+            }
+            break
+        }
+        return movementLogs[mostRecentLogTimestampBufferPeriodIndex].timestamp!
+    }
+
 
     
     var movementLogs: [MovementLog]

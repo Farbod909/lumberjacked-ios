@@ -5,6 +5,8 @@
 //  Created by Farbod Rafezy on 7/5/24.
 //
 
+import Foundation
+
 extension Optional where Wrapped == String {
     var _bound: String? {
         get {
@@ -52,4 +54,14 @@ extension NullCodable: Decodable where T: Decodable {
         let container = try decoder.singleValueContainer()
         self.wrappedValue = try? container.decode(T.self)
     }
+}
+
+// source: https://stackoverflow.com/questions/35392538/remove-time-from-a-date-like-this-2016-02-10-000000
+extension Date {
+    public var removeTimestamp : Date? {
+       guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: self)) else {
+        return nil
+       }
+       return date
+   }
 }

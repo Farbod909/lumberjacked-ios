@@ -118,23 +118,56 @@ struct MovementsListByDateView: View {
 
     var body: some View {
         List {
-            ForEach(viewModel.getUniqueLastLoggedDayBeforeBufferPeriodValues(), id: \.self)
-            { lastLoggedDayBeforeBufferPeriod in
+            if !viewModel.inProgressMovements.isEmpty {
                 Section {
-                    ForEach(viewModel.getMovements(
-                        lastLoggedDayBeforeBufferPeriod: lastLoggedDayBeforeBufferPeriod))
-                    { movement in
+                    ForEach(viewModel.inProgressMovements, id: \.self) { movement in
+                        MovementsRowView(
+                            movement: movement,
+                            selectedViewMode: selectedViewMode)
+                    }
+                    ForEach(viewModel.suggestedMovements, id: \.self) { movement in
+                        MovementsRowView(
+                            movement: movement,
+                            selectedViewMode: selectedViewMode)
+                    }
+                    .opacity(0.5)
+                } header: {
+                    MovementsListHeaderView(headerTitle: "In Progress")
+                }
+            }
+            ForEach(viewModel.dateSections.keys.sorted(by: >), id: \.self) { key in
+                Section {
+                    ForEach(viewModel.dateSections[key]!, id: \.self) { movement in
                         MovementsRowView(
                             movement: movement,
                             selectedViewMode: selectedViewMode)
                     }
                 } header: {
-                    MovementsListHeaderView(
-                        headerTitle: viewModel.getSectionName(lastLoggedDayBeforeBufferPeriod))
+                    MovementsListHeaderView(headerTitle: formatDateAsSectionTitle(key))
                 }
             }
-            
         }
+    }
+    
+    func formatDateAsSectionTitle(_ input : Date) -> String {
+        if input == .distantFuture {
+            return "New"
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = TimeZone.current
+
+        if Calendar.current.isDateInToday(input) {
+            return "Today"
+        }
+        if Calendar.current.isDateInYesterday(input) {
+            return "Yesterday"
+        }
+
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        return dateFormatter.string(from: input)
     }
 }
 
@@ -144,9 +177,9 @@ struct MovementsListByCategoryView: View {
 
     var body: some View {
         List {
-            ForEach(viewModel.getAllCategories(), id: \.self) { category in
-                Section() {
-                    ForEach(viewModel.getMovements(category: category)) { movement in
+            ForEach(Array(viewModel.categorySections.keys.sorted()), id: \.self) { category in
+                Section {
+                    ForEach(viewModel.categorySections[category]!) { movement in
                         MovementsRowView(movement: movement, selectedViewMode: selectedViewMode)
                     }
                 } header: {
@@ -254,7 +287,6 @@ struct MovementsRowMinimal: View {
         Text(movement.name)
     }
 }
-
 
 struct MovementsListHeaderView: View {
     var headerTitle: String
