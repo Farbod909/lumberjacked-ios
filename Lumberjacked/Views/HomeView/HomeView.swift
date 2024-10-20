@@ -143,7 +143,9 @@ struct MovementsListByDateView: View {
                             selectedViewMode: selectedViewMode)
                     }
                 } header: {
-                    MovementsListHeaderView(headerTitle: formatDateAsSectionTitle(key))
+                    MovementsListHeaderView(
+                        headerTitle: formatDateAsSectionTitle(key),
+                        headerSubtitle: formatDateAsSectionSubtitle(key))
                 }
             }
         }
@@ -168,6 +170,13 @@ struct MovementsListByDateView: View {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
         return dateFormatter.string(from: input)
+    }
+    
+    func formatDateAsSectionSubtitle(_ input : Date) -> String {
+        if input == .distantFuture || input == .distantPast {
+            return ""
+        }
+        return input.formatted(Date.FormatStyle().weekday(.wide))
     }
 }
 
@@ -290,13 +299,21 @@ struct MovementsRowMinimal: View {
 
 struct MovementsListHeaderView: View {
     var headerTitle: String
+    var headerSubtitle = ""
     
     var body: some View {
-        Text(headerTitle)
-            .font(.title)
-            .textCase(nil)
-            .bold()
-            .padding(.bottom, 2)
+        VStack(alignment: .leading) {
+            Text(headerTitle)
+                .font(.title)
+                .textCase(nil)
+                .bold()
+            if !headerSubtitle.isEmpty {
+                Text(headerSubtitle)
+                    .font(.subheadline)
+                    .textCase(nil)
+            }
+        }
+        .padding(.bottom, 2)
     }
 }
 
